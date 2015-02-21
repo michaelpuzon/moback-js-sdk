@@ -1,0 +1,118 @@
+<html>
+<head>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-resource.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+  <script type="text/javascript" src="moback.js"></script>
+  <title>Moback Test Page</title>
+</head>
+<body>
+<div ng-app="Test">
+  <div ng-controller="mobackTesterCtrl">
+    <h1>Moback User Manager Functions</h1>
+    <button ng-click="createUser()">create user</button>
+    <button ng-click="login()">login</button>
+    <button ng-click="resetPassword()">reset password</button>
+    <button ng-click="updateUser()">update user</button>
+    <p ng-cloak="">{{ output }}</p>
+  </div>
+</div>
+<script>
+
+
+  angular.module('Test', ['ngResource']).controller('mobackTesterCtrl', function ($scope ) {
+
+    /*after creating an app in moback, grab the app key, and dev key*/
+    Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
+    //console.log(Moback.showAppKey());
+
+    var mobackUser1 = new Moback.userMgr();
+    //console.log(mobackUser1.showAppKey());
+
+
+    $scope.createUser = function() {
+      /*create a user
+       * user obj, callback function
+       * on the callback, calling a get user detail afterwards
+       * */
+      //mobackUser1.createUser("user2","adsf1234","mike@gmail.com","Mike", function(data){
+      var userObj = {
+        "userId":"user4",
+        "password":"asdf1234",
+        "email":"mike4@gmail.com",
+        "firstname":"Uday",
+        "lastname":"nayak"
+      };
+      mobackUser1.createUser(userObj, function(data){
+        console.log(data);
+        mobackUser1.getUserDetails(function(data){
+          $scope.output = data;
+          console.log(data);
+          $scope.$apply()
+        })
+      });
+    };
+
+
+
+    $scope.login = function() {
+      /*login
+       * username, password, callback
+       * on the callback, calling a get user detail afterwards
+       * */
+      mobackUser1.login("user1", "asdf1234", function(data){
+        console.log(data);
+        mobackUser1.getUserDetails(function(data){
+          $scope.output = data;
+          console.log(data);
+          $scope.$apply();
+        })
+      });
+
+    };
+
+    $scope.resetPassword = function() {
+      /*reset password
+      * utility function to reset a password, does not need for a user to be logged in
+      * emailId, callback
+      * */
+      mobackUser1.resetPassword("michaelp+jssdk@moback.com",function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+    $scope.updateUser = function() {
+      /*updateUser
+      * update user object, callback
+      * call login first, then call update user
+      * */
+
+       var userObj = {
+        "firstname":"Mike Puzon",
+        "password":"asdf1234",
+        "email":"michaelp+jssdk@moback.com"
+      };
+
+      mobackUser1.updateUser(userObj, function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      })
+    }
+
+    $scope.output = "";
+
+
+  });
+</script>
+
+</body>
+</html>
+

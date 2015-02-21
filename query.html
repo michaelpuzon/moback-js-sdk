@@ -1,0 +1,223 @@
+<html>
+<head>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-resource.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+  <script type="text/javascript" src="dist/moback.js"></script>
+  <title>Moback Test Page</title>
+</head>
+<body>
+<div ng-app="Test">
+  <div ng-controller="mobackTesterCtrl" class="container">
+    <h1>Moback Query Manager Functions</h1>
+    <button ng-click="execute()">execute query</button>
+    <button ng-click="getObject()">get single object</button>
+    <button ng-click="setFilterToyota()">set brand to toyota</button>
+    <button ng-click="setFilterNotToyota()">set brand to NOT toyota</button>
+    <button ng-click="setFilterGT20k()">gt 20000</button>
+    <button ng-click="setFilterLT20k()">lt 20000</button>
+    <button ng-click="getFilters()">getFilters</button>
+    <button ng-click="resetFilters()">reset Filters</button>
+    <br>
+    <button ng-click="setLimit()">limit 10</button>
+    <button ng-click="setSkip()">skip 3</button>
+    <button ng-click="setModeOr()">query to or</button>
+    <button ng-click="setExists()">price exists</button>
+    <button ng-click="setNotExists()">price does not exists</button>
+    <button ng-click="ascending()">ascending price</button>
+    <button ng-click="descending()">descending price</button>
+    <br>
+    <button ng-click="restrict()">select brand only</button>
+    <button ng-click="contains()">contains toyota and honda</button>
+    <button ng-click="notcontains()">NOT toyota and honda</button>
+    <button ng-click="wheeldash()">contains wheel/dashboard</button>
+    <p ng-cloak="" style="margin-top: 20px;">{{ output }}</p>
+  </div>
+</div>
+<script>
+
+
+  angular.module('Test', ['ngResource']).controller('mobackTesterCtrl', function ($scope ) {
+
+    /*after creating an app in moback, grab the app key, and dev key*/
+    Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
+
+    var mobackCarsQuery = new Moback.queryMgr('cars');
+
+    $scope.execute = function() {
+      /* retrieve all objects
+       * supply callback function
+       * */
+      mobackCarsQuery.fetch(function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply()
+      });
+    };
+
+    $scope.getObject = function() {
+      /* create a reusable query object
+       * expects table object to be passed
+       * */
+      var output =  mobackCarsQuery.fetchSingle('VOUBDOSwx2_EDDY2', function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply()
+      });
+    };
+
+    $scope.setFilterNotToyota = function() {
+      /*remove object
+       * callback
+       * */
+      var output = mobackCarsQuery.notEqualTo("brand", "toyota");
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setFilterToyota = function() {
+      /*remove object
+      * callback
+      * */
+      var output = mobackCarsQuery.equalTo("brand", "toyota");
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setFilterGT20k = function() {
+      /*remove object
+       * callback
+       * */
+      var output = mobackCarsQuery.greaterThan("value", 21000);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setFilterLT20k = function() {
+      /*remove object
+       * callback
+       * */
+      var output = mobackCarsQuery.lessThan("value", 20000);
+      $scope.output = output;
+      console.log(output);
+    };
+
+
+    $scope.getFilters = function() {
+      /*get Filters
+      * */
+      var output = mobackCarsQuery.getFilters();
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.resetFilters = function() {
+      /*reset Filters
+       * */
+      var output = mobackCarsQuery.resetFilters();
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setLimit = function() {
+      /*set limit to 3
+       * */
+      var output = mobackCarsQuery.limit(3);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setSkip = function() {
+      /*set limit to 3
+       * */
+      var output = mobackCarsQuery.skip(3);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setModeOr = function() {
+      /*set query mode
+      accepts value and/or
+       * */
+      var output = mobackCarsQuery.queryMode('or');
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setExists = function() {
+      /*set exists, column value has to exist
+       * */
+      var output = mobackCarsQuery.exists('value');
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.setNotExists = function() {
+      /*set not exists, column value has to NOT exist
+       * */
+      var output = mobackCarsQuery.doesNotExist('value');
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.ascending = function() {
+      /*set ascending order for price column
+       * */
+      var output = mobackCarsQuery.ascending('value');
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.descending = function() {
+      /*set ascending order for price column
+       * */
+      var output = mobackCarsQuery.descending('value');
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.restrict = function() {
+      /*return only the brand columns
+       * */
+      //var output = mobackCarsQuery.select('brand');
+      var output = mobackCarsQuery.select(['brand', 'color']);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.contains = function() {
+      /*filter column with contains
+       * */
+      var output = mobackCarsQuery.containedIn("brand", ["toyota", "honda"]);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.notcontains = function() {
+      /*filter column with not contains
+       * */
+      var output = mobackCarsQuery.notContainedIn("brand", ["toyota", "honda"]);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.wheeldash = function() {
+      /* contains all, to be applied to array column
+       * */
+      var output = mobackCarsQuery.containsAll("features", ["wheels"]);
+      $scope.output = output;
+      console.log(output);
+    };
+
+    $scope.output = "";
+  });
+</script>
+
+</body>
+</html>
+

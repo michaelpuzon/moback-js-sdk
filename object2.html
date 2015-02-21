@@ -1,0 +1,169 @@
+<html>
+<head>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-resource.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+  <script type="text/javascript" src="dist/moback.js"></script>
+  <title>Moback Test Page</title>
+</head>
+<body>
+<div ng-app="Test">
+  <div ng-controller="mobackTesterCtrl">
+    <h1>Moback Object Manager Functions</h1>
+    <button ng-click="createObject()">create object</button>
+    <button ng-click="createObjectExisting()">fetch existing object</button>
+    <button ng-click="getProperties()">get obj Properties</button>
+    <button ng-click="set()">Set Property</button>
+    <button ng-click="getObject()">grab object</button>
+    <button ng-click="updateObject()">update object</button>
+    <button ng-click="removeObject()">remove object</button>
+    <p ng-cloak="">{{ output }}</p>
+  </div>
+</div>
+<script>
+
+
+  angular.module('Test', ['ngResource']).controller('mobackTesterCtrl', function ($scope ) {
+
+    /*after creating an app in moback, grab the app key, and dev key*/
+    Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
+
+    var mobackCarsQuery = new Moback.queryMgr('cars');
+    window.mobackObj1 = new Moback.objMgr("Movie");
+
+     // var movie = { "genre" : "Thriller" , "movieName" : "The Imitation Game" , "duration" : "120 Minutes" , "lead" : "Benedict Cumberbatch" , "createdAt" : "2015-02-19T22:48:57.284Z" , "updatedAt" : "2015-02-19T22:48:57.284Z" , "objectId" : "VOZoWeSwmghwOHN4"};
+     // mobackObj1.createExistingObject(movie);
+    //  console.log(mobackObj1.get("movieName"));
+     // console.log(m1.get("createdAt"));
+
+/*query manager code
+*
+* var mobackObj1 = new Moback.objMgr("Movie");
+*
+* mobackObj1.createExistingObject(movie);
+* return mobackObj1;
+*
+* f
+* */
+      /*
+    mobackObj1.set("movieName","The Imitation Game");
+      console.log(mobackObj1.get("movieName"));
+      mobackObj1.set("genre","Thriller");
+      console.log(mobackObj1.get("genre"));
+      mobackObj1.set("lead", "Benedict Cumberbatch");
+      console.log(mobackObj1.get("lead"));
+      mobackObj1.set("duration","120 Minutes");
+      console.log(mobackObj1.get("duration"));
+      mobackObj1.save();
+      console.log(mobackObj1.get("rowObjectId"));
+      mobackObj1.fetch("VOZkMOSwmghwOHNp",function(data){
+          console.log(data);
+      });
+      mobackObj1.remove();
+      */
+
+    $scope.createObject = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      //mobackUser1.createUser("user2","adsf1234","mike@gmail.com","Mike", function(data){
+      var userObj = {
+        "movieName" : "The Imitation Game"
+      };
+      mobackObj1.createObject(userObj, function(data){
+        console.log(data);
+        mobackObj1.getObject(function(data){
+          $scope.output = data;
+          console.log(data);
+          $scope.$apply()
+        })
+      });
+    };
+
+    $scope.createObjectExisting = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      mobackCarsQuery.fetchSingle('VOUQU-Swx2_EDDY-', function(data){
+        mobackObj1 = data;
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+
+    $scope.getProperties = function() {
+      /*select an existing object
+       * row obj id, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      var output = "";
+      output += " brand:" + mobackObj1.get('brand');
+      output += " value:" + mobackObj1.get('value');
+      output += " color:" + mobackObj1.get('color');
+      output += " objectId:" + mobackObj1.id;
+
+      $scope.output = output;
+      console.log(output);
+
+      //  });
+    };
+
+
+    $scope.getObject = function() {
+      /*select an existing object
+       * row obj id, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+     // mobackObj1.selectObject("VOUBpeSwx2_EDDY5", "cars", function(data){
+       // console.log(data);
+        mobackObj1.getObject(function(data){
+          $scope.output = data;
+          console.log(data);
+          $scope.$apply()
+        })
+    //  });
+    };
+
+    $scope.removeObject = function() {
+      /*remove object
+      * callback
+      * */
+        mobackObj1.removeObject(function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+    $scope.updateObject = function() {
+      /*updateObject
+      * update user object, callback
+      * call login first, then call update user
+      * */
+      var userObj = {
+        "brand" : "mazda",
+        "color" : "blue"
+      };
+      mobackObj1.updateObject(userObj, function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply()
+      });
+    };
+
+    $scope.output = "";
+  });
+</script>
+
+</body>
+</html>
+
