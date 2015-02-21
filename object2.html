@@ -17,6 +17,7 @@
     <h1>Moback Object Manager Functions</h1>
     <button ng-click="createObject()">create object</button>
     <button ng-click="createObjectExisting()">fetch existing object</button>
+    <button ng-click="createAllExisting()">fetch all cars object</button>
     <button ng-click="getProperties()">get obj Properties</button>
     <button ng-click="set()">Set Property</button>
     <button ng-click="getObject()">grab object</button>
@@ -35,6 +36,7 @@
 
     var mobackCarsQuery = new Moback.queryMgr('cars');
     window.mobackObj1 = new Moback.objMgr("Movie");
+    window.allCars = [];
 
      // var movie = { "genre" : "Thriller" , "movieName" : "The Imitation Game" , "duration" : "120 Minutes" , "lead" : "Benedict Cumberbatch" , "createdAt" : "2015-02-19T22:48:57.284Z" , "updatedAt" : "2015-02-19T22:48:57.284Z" , "objectId" : "VOZoWeSwmghwOHN4"};
      // mobackObj1.createExistingObject(movie);
@@ -93,6 +95,20 @@
        * */
       mobackCarsQuery.fetchSingle('VOUQU-Swx2_EDDY-', function(data){
         mobackObj1 = data;
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+
+    $scope.createAllExisting = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      mobackCarsQuery.fetch(function(data){
+        allCars = data;
         $scope.output = data;
         console.log(data);
         $scope.$apply();

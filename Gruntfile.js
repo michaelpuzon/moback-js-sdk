@@ -32,8 +32,17 @@ module.exports = function(grunt) {
       }
     },
     connect: {
+      /*
       server: {
         port: 1337
+      }
+      */
+      server: {
+        options: {
+          livereload: true,
+          hostname: 'localhost',
+          port: 9009
+        }
       }
     },
     clean: {
@@ -62,7 +71,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-doxx');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-connect');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  //grunt.loadNpmTasks('grunt-connect');
 
 
   grunt.registerMultiTask('integrateAllJS', 'Integrates js files into master js file', function () {
@@ -83,4 +93,6 @@ module.exports = function(grunt) {
   grunt.registerTask('build-dev', ['clean:dev', 'concat']);
 
   grunt.registerTask('default', ['clean:build', 'concat', 'uglify', 'doxx']);
+
+  grunt.registerTask('serve', ['connect:server', 'watch']);
 };

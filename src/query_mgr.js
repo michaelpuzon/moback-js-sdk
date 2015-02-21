@@ -50,7 +50,17 @@ moback.queryMgr = function (table) {
         'X-Moback-Application-Key': appKey
       };
       microAjax('GET', url, function (res) {
-        callback(res);
+        if(res.results){
+          var objArray = [];
+          for (var i = 0; i < res.results.length; i++) {
+            var mobackObj = new Moback.objMgr(res.results[i]);
+            mobackObj.createFromExistingObject(res.results[i]);
+            objArray.push(mobackObj);
+          }
+          callback(objArray);
+        } else {
+          callback(res);
+        }
       }, headers);
     } else {
       callback("Query object is not set, please set a query object first");
