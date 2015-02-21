@@ -31,6 +31,11 @@ module.exports = function(grunt) {
         }
       }
     },
+    connect: {
+      server: {
+        port: 1337
+      }
+    },
     clean: {
       build: {
         src: ["dist", "docs"]
@@ -57,6 +62,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-doxx');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-connect');
+
 
   grunt.registerMultiTask('integrateAllJS', 'Integrates js files into master js file', function () {
     var data = this.data,
