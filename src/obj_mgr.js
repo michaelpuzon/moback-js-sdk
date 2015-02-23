@@ -98,7 +98,6 @@ moback.objMgr = function (table) {
     } else {
       return data[key];
     }
-
   };
 
     /**
@@ -118,12 +117,17 @@ moback.objMgr = function (table) {
     }
     if(parent != null){
       if(parent.id){
-        var objTable = parent.className;
         postData.parent = {
           "__type":"Pointer",
           "objectId": parent.id,
-          "className": objTable
+          "className": parent.className
         };
+      } else {
+        //create the parent object dynamically and then do the save on the current obj
+        parent.save(function(){
+          self.save(callback);
+        });
+        return;
       }
     }
     if(!rowObjectId) {

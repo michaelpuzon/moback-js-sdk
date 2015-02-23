@@ -61,7 +61,7 @@
       });
     };
 
-    $scope.createObject2 = function() {
+    $scope.create2Objects = function() {
       /*create an object
        * row obj, table, callback function
        * on the callback, calling a get object detail afterwards
@@ -71,6 +71,8 @@
 
       obj2 = new Moback.objMgr('comment');
       obj2.set("content", "best actor to george clooney");
+      obj2.set("parent", obj1);
+
       obj2.save(function(data){
         $scope.output = data;
         console.log(data);
@@ -78,7 +80,7 @@
       });
     };
 
-    $scope.create2Objects = function() {
+    $scope.createObject2  = function() {
       /*create an object
        * row obj, table, callback function
        * on the callback, calling a get object detail afterwards
