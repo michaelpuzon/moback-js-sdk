@@ -67,7 +67,20 @@ moback.objMgr = function (table) {
      * @returns {*}
      */
   this.get = function(key) {
-     return data[key];
+     if(data[key]) {
+         return data[key];
+     }
+     else {
+         return ("Property does not exist");
+     }
+  };
+
+    /**
+     * Resets the key to null
+     * @param key
+     */
+  this.unset = function(key) {
+      data[key] = null;
   };
 
     /**
@@ -76,12 +89,10 @@ moback.objMgr = function (table) {
      *
      */
   this.save = function(callback) {
-      var headers = {
-          'X-Moback-Environment-Key': envKey,
-          'X-Moback-Application-Key': appKey
-      };
-
-
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey
+    };
     if(!rowObjectId) {
     var url = baseUrl + "objectmgr/api/collections/" + table;
         microAjax('POST', url, function (res) {
@@ -103,7 +114,22 @@ moback.objMgr = function (table) {
   };
 
 
-    /**
+  this.fetch = function(callback) {
+      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
+      var headers = {
+          'X-Moback-Environment-Key': envKey,
+          'X-Moback-Application-Key': appKey
+      };
+      microAjax('GET', url, function (res) {
+          callback(res);
+          for(var key in res){
+              data[key] = res[key];
+          }
+      }, headers);
+  };
+
+
+     /**
      * Removes the object from the table
      */
   this.remove = function() {
