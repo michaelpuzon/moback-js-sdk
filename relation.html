@@ -20,7 +20,7 @@
     <button ng-click="create2Objects()">create 2 objects</button>
     <button ng-click="linkObject()">link obj2 to obj 1</button>
     <button ng-click="getObject2()">get object 2</button>
-    <button ng-click="createAllExisting()">fetch all cars object</button>
+    <button ng-click="testRelation()">assign 2 cars to vendor</button>
     <button ng-click="getProperties()">get obj Properties</button>
     <button ng-click="set()">Set Property</button>
     <button ng-click="getObject()">grab object</button>
@@ -37,9 +37,12 @@
     /*after creating an app in moback, grab the app key, and dev key*/
     Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
 
-    var mobackCarsQuery = new Moback.queryMgr('comment');
+    var mobackCommentQuery = new Moback.queryMgr('comment');
+    var mobackCarsQuery = new Moback.queryMgr('cars');
+    var mobackVendorQuery = new Moback.queryMgr('vendor');
     window.obj1 = {};
     window.obj2 = {};
+    window.vendor1 = {};
 
      // var movie = { "genre" : "Thriller" , "movieName" : "The Imitation Game" , "duration" : "120 Minutes" , "lead" : "Benedict Cumberbatch" , "createdAt" : "2015-02-19T22:48:57.284Z" , "updatedAt" : "2015-02-19T22:48:57.284Z" , "objectId" : "VOZoWeSwmghwOHN4"};
      // mobackObj1.createExistingObject(movie);
@@ -118,15 +121,13 @@
        * row obj, table, callback function
        * on the callback, calling a get object detail afterwards
        * */
-      mobackCarsQuery.fetchSingle('VOuTy-Sw7MI5Wyod', function(data){
+      mobackCommentQuery.fetchSingle('VOuqHeSw7MI5Wyos', function(data){
         obj2 = data;
         $scope.output = data;
         console.log(data);
         $scope.$apply();
       });
     };
-
-
 
     $scope.createObjectExisting = function() {
       /*create an object
@@ -142,15 +143,25 @@
     };
 
 
-    $scope.createAllExisting = function() {
+    $scope.testRelation = function() {
       /*create an object
        * row obj, table, callback function
        * on the callback, calling a get object detail afterwards
        * */
-      mobackCarsQuery.fetch(function(data){
-        allCars = data;
-        $scope.output = data;
+      mobackCarsQuery.fetchSingle('VOUP8uSwx2_EDDY9', function(data){
+        var mobackObj1 = data;
         console.log(data);
+
+        mobackVendorQuery.fetchSingle('VOutQeSw7MI5Wyoy', function(data){
+          vendor1 = data;
+          console.log(data);
+        });
+
+
+
+
+
+        $scope.output = data;
         $scope.$apply();
       });
     };
