@@ -53,7 +53,7 @@ moback.queryMgr = function (table) {
         if(res.results){
           var objArray = [];
           for (var i = 0; i < res.results.length; i++) {
-            var mobackObj = new Moback.objMgr(res.results[i]);
+            var mobackObj = new Moback.objMgr(rowTable);
             mobackObj.createFromExistingObject(res.results[i]);
             objArray.push(mobackObj);
           }

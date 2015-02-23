@@ -15,8 +15,11 @@
 <div ng-app="Test">
   <div ng-controller="mobackTesterCtrl">
     <h1>Moback Object Manager Functions</h1>
-    <button ng-click="createObject()">create object</button>
-    <button ng-click="createObjectExisting()">fetch existing object</button>
+    <button ng-click="createObject1()">create object 1</button>
+    <button ng-click="createObject2()">create object 2</button>
+    <button ng-click="create2Objects()">create 2 objects</button>
+    <button ng-click="linkObject()">link obj2 to obj 1</button>
+    <button ng-click="getObject2()">get object 2</button>
     <button ng-click="createAllExisting()">fetch all cars object</button>
     <button ng-click="getProperties()">get obj Properties</button>
     <button ng-click="set()">Set Property</button>
@@ -34,59 +37,94 @@
     /*after creating an app in moback, grab the app key, and dev key*/
     Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
 
-    var mobackCarsQuery = new Moback.queryMgr('cars');
-    window.mobackObj1 = new Moback.objMgr("Movie");
-    window.allCars = [];
+    var mobackCarsQuery = new Moback.queryMgr('comment');
+    window.obj1 = {};
+    window.obj2 = {};
 
      // var movie = { "genre" : "Thriller" , "movieName" : "The Imitation Game" , "duration" : "120 Minutes" , "lead" : "Benedict Cumberbatch" , "createdAt" : "2015-02-19T22:48:57.284Z" , "updatedAt" : "2015-02-19T22:48:57.284Z" , "objectId" : "VOZoWeSwmghwOHN4"};
      // mobackObj1.createExistingObject(movie);
     //  console.log(mobackObj1.get("movieName"));
      // console.log(m1.get("createdAt"));
 
-/*query manager code
-*
-* var mobackObj1 = new Moback.objMgr("Movie");
-*
-* mobackObj1.createExistingObject(movie);
-* return mobackObj1;
-*
-* f
-* */
-      /*
-    mobackObj1.set("movieName","The Imitation Game");
-      console.log(mobackObj1.get("movieName"));
-      mobackObj1.set("genre","Thriller");
-      console.log(mobackObj1.get("genre"));
-      mobackObj1.set("lead", "Benedict Cumberbatch");
-      console.log(mobackObj1.get("lead"));
-      mobackObj1.set("duration","120 Minutes");
-      console.log(mobackObj1.get("duration"));
-      mobackObj1.save();
-      console.log(mobackObj1.get("rowObjectId"));
-      mobackObj1.fetch("VOZkMOSwmghwOHNp",function(data){
-          console.log(data);
-      });
-      mobackObj1.remove();
-      */
-
-    $scope.createObject = function() {
+    $scope.createObject1 = function() {
       /*create an object
        * row obj, table, callback function
        * on the callback, calling a get object detail afterwards
        * */
-      //mobackUser1.createUser("user2","adsf1234","mike@gmail.com","Mike", function(data){
-      var userObj = {
-        "movieName" : "The Imitation Game"
-      };
-      mobackObj1.createObject(userObj, function(data){
+
+      obj1 = new Moback.objMgr('post');
+      obj1.set("title", "oscar posts");
+      obj1.save(function(data){
+        $scope.output = data;
         console.log(data);
-        mobackObj1.getObject(function(data){
-          $scope.output = data;
-          console.log(data);
-          $scope.$apply()
-        })
+        $scope.$apply();
       });
     };
+
+    $scope.createObject2 = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      obj1 = new Moback.objMgr('post');
+      obj1.set("title", "golden globe posts");
+
+      obj2 = new Moback.objMgr('comment');
+      obj2.set("content", "best actor to george clooney");
+      obj2.save(function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+    $scope.create2Objects = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+
+      obj2 = new Moback.objMgr('comment');
+      obj2.set("content", "best actor to ben affleck");
+      obj2.save(function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+
+
+    $scope.linkObject = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      obj2 = new Moback.objMgr('comment');
+      obj2.set("content", "best actor to ben affleck");
+      obj2.set("parent", obj1);
+      obj2.save(function(data){
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+
+    $scope.getObject2 = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      mobackCarsQuery.fetchSingle('VOuTy-Sw7MI5Wyod', function(data){
+        obj2 = data;
+        $scope.output = data;
+        console.log(data);
+        $scope.$apply();
+      });
+    };
+
+
 
     $scope.createObjectExisting = function() {
       /*create an object

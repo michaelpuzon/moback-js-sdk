@@ -1,8 +1,13 @@
 moback.objMgr = function (table) {
+  if(table){
+    this.className = table;
+  }
   var rowObjectId = false;
   var rowTable = table;
   var data = {};
   var self = this;
+  var parent = null;
+  var relations = [];
 
     /**
      * Creates an object in the table specified in the
@@ -45,11 +50,25 @@ moback.objMgr = function (table) {
           self[prop] = existingObj[prop];
         }
       } else {
-        self.set(prop, existingObj[prop]);
+        //check if pointer structure
+        if(existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Pointer"){
+          var parentObj = new Moback.objMgr(existingObj[prop]['className']);
+          parentObj.id = existingObj[prop]['objectId'];
+          parent = parentObj;
+        } else {
+          self.set(prop, existingObj[prop]);
+        }
       }
     }
   };
 
+  /**
+   * return the current table which this object belongs to
+   * @returns {string} table name
+   */
+  this.getTable = function() {
+    return rowTable;
+  };
 
     /**
      * Sets the properties of the object
@@ -57,8 +76,15 @@ moback.objMgr = function (table) {
      * @param value
      */
   this.set = function(key, value) {
-    data[key] = value;
-      return("Property set");
+    var successMsg = "";
+    if(key == "parent"){
+      parent = value;
+      successMsg = "Parent set";
+    } else {
+      data[key] = value;
+      successMsg = "Property set";
+    }
+    return successMsg;
   };
 
     /**
@@ -67,7 +93,12 @@ moback.objMgr = function (table) {
      * @returns {*}
      */
   this.get = function(key) {
-     return data[key];
+    if(key == "parent"){
+      return parent;
+    } else {
+      return data[key];
+    }
+
   };
 
     /**
@@ -76,14 +107,27 @@ moback.objMgr = function (table) {
      *
      */
   this.save = function(callback) {
-      var headers = {
-          'X-Moback-Environment-Key': envKey,
-          'X-Moback-Application-Key': appKey
-      };
-
-
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey
+    };
+    //prepare object to pass to api call
+    var postData = {};
+    for(var key in data){
+      postData[key] = data[key];
+    }
+    if(parent != null){
+      if(parent.id){
+        var objTable = parent.className;
+        postData.parent = {
+          "__type":"Pointer",
+          "objectId": parent.id,
+          "className": objTable
+        };
+      }
+    }
     if(!rowObjectId) {
-    var url = baseUrl + "objectmgr/api/collections/" + table;
+        var url = baseUrl + "objectmgr/api/collections/" + table;
         microAjax('POST', url, function (res) {
           if(res.objectId){
             rowObjectId = res.objectId;
@@ -92,12 +136,12 @@ moback.objMgr = function (table) {
             self.updatedAt = res.updatedAt;
           }
           callback(res);
-        }, headers, data);
+        }, headers, postData);
     } else if (rowObjectId && rowTable){
       var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
       microAjax('PUT', url, function (res) {
-          callback(res);
-      }, headers, data);
+        callback(res);
+      }, headers, postData);
     }
 
   };
