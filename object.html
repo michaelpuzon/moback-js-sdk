@@ -18,7 +18,8 @@
     <button ng-click="createObject()">create object</button>
     <button ng-click="set()">Set Property</button>
     <button ng-click="save()">Save Object</button>
-    <button ng-click="fetch()">fetch object</button>
+    <button ng-click="fetchExistingObject()">Fetch object</button>
+    <button ng-click="fetchUpdated()">Fetch updated</button>
     <button ng-click="updateObject()">Update object</button>
     <button ng-click="remove()">Remove object</button>
     <button ng-click="createExistingObject()">Create Existing Object</button>
@@ -33,7 +34,7 @@
     /*after creating an app in moback, grab the app key, and dev key*/
     Moback.initialize("ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl","MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0");
 
-    var mobackObj1 = new Moback.objMgr("Movie");
+     window.mobackObj1 = new Moback.objMgr("Movie");
 
       //var movie = { "genre" : "Thriller" , "movieName" : "The Imitation Game" , "duration" : "120 Minutes" , "lead" : "Benedict Cumberbatch" , "createdAt" : "2015-02-19T22:48:57.284Z" , "updatedAt" : "2015-02-19T22:48:57.284Z" , "objectId" : "VOZoWeSwmghwOHN4"};
      // mobackObj1.createExistingObject(movie);
@@ -77,7 +78,7 @@
 
 
     $scope.set = function() {
-        mobackObj1.set("movieName","The Imitation Game");
+        mobackObj1.set("movieName","The Imitation Game1");
         //console.log(mobackObj1.get("movieName"));
         mobackObj1.set("genre","Thriller");
         //console.log(mobackObj1.get("genre"));
@@ -85,7 +86,6 @@
         //console.log(mobackObj1.get("lead"));
         mobackObj1.set("duration","30 Minutes");
         //console.log(mobackObj1.get("duration"));
-        console.log("All properties set");
     };
 
     $scope.save = function() {
@@ -95,12 +95,26 @@
           });
     };
 
-    $scope.fetch = function() {
-      mobackObj1.fetch("VOefYeSwmghwOHOu",function(data){
+    $scope.fetchExistingObject = function() {
+        var mobackMovieQuery = new Moback.queryMgr('Movie');
+        mobackMovieQuery.fetchSingle('VOuteeSw7MI5Wyoz', function(data){
+            mobackObj1 = data;
+        });
+
+        mobackObj1.fetchExistingObject("VOuteeSw7MI5Wyoz",function(data){
           $scope.output = data;
           console.log(data);
-      });
+        });
     };
+
+    $scope.fetchUpdated = function() {
+          mobackObj1.fetch(function(data){
+          $scope.output = data;
+          console.log(data);
+        });
+    };
+
+
 
     $scope.createExistingObject = function(){
         var newObject = mobackObj1.createExistingObject(movie);
