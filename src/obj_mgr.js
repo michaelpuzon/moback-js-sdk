@@ -93,15 +93,14 @@ moback.objMgr = function (table) {
      * @returns {*}
      */
   this.get = function(key) {
-    if(data[key]) {
-      if(key == "parent"){
-        return parent;
-      } else {
+    if(key == "parent"){
+      return parent;
+    } else{
+      if(data[key]) {
         return data[key];
+      } else {
+        return ("Property does not exist");
       }
-    }
-    else {
-      return ("Property does not exist");
     }
   };
 
@@ -164,17 +163,19 @@ moback.objMgr = function (table) {
   };
 
 
+  /**
+   * Retrieve the existing object from the cloud.
+   * @param callback
+   */
   this.fetch = function(callback) {
-      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
+      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
       var headers = {
-          'X-Moback-Environment-Key': envKey,
-          'X-Moback-Application-Key': appKey
+        'X-Moback-Environment-Key': envKey,
+        'X-Moback-Application-Key': appKey
       };
       microAjax('GET', url, function (res) {
-          callback(res);
-          for(var key in res){
-              data[key] = res[key];
-          }
+        self.createFromExistingObject(res);
+        callback(res);
       }, headers);
   };
 
