@@ -14,9 +14,8 @@
 <body>
 <div ng-app="Test">
   <div ng-controller="mobackTesterCtrl">
-    <h1>Moback Object Manager Functions</h1>
+    <h1>Moback Object Relation Manager Functions</h1>
     <button ng-click="createObject1()">create object 1</button>
-    <button ng-click="createObject2()">create object 2</button>
     <button ng-click="create2Objects()">create 2 objects</button>
     <button ng-click="linkObject()">link obj2 to obj 1</button>
     <button ng-click="getObject2()">get object 2 with parent</button>
@@ -45,12 +44,6 @@
     var mobackVendorQuery = new Moback.queryMgr('vendor');
     window.obj1 = {};
     window.obj2 = {};
-    window.vendor1 = {};
-
-     // var movie = { "genre" : "Thriller" , "movieName" : "The Imitation Game" , "duration" : "120 Minutes" , "lead" : "Benedict Cumberbatch" , "createdAt" : "2015-02-19T22:48:57.284Z" , "updatedAt" : "2015-02-19T22:48:57.284Z" , "objectId" : "VOZoWeSwmghwOHN4"};
-     // mobackObj1.createExistingObject(movie);
-    //  console.log(mobackObj1.get("movieName"));
-     // console.log(m1.get("createdAt"));
 
     $scope.createObject1 = function() {
       /*create an object
@@ -68,9 +61,7 @@
     };
 
     $scope.create2Objects = function() {
-      /*create an object
-       * row obj, table, callback function
-       * on the callback, calling a get object detail afterwards
+      /*create 2 objects and link obj1 with obj2
        * */
       obj1 = new Moback.objMgr('post');
       obj1.set("title", "golden globe posts");
@@ -85,22 +76,6 @@
         $scope.$apply();
       });
     };
-
-    $scope.createObject2  = function() {
-      /*create an object
-       * row obj, table, callback function
-       * on the callback, calling a get object detail afterwards
-       * */
-
-      obj2 = new Moback.objMgr('comment');
-      obj2.set("content", "best actor to ben affleck");
-      obj2.save(function(data){
-        $scope.output = data;
-        console.log(data);
-        $scope.$apply();
-      });
-    };
-
 
 
     $scope.linkObject = function() {
@@ -135,30 +110,17 @@
       });
     };
 
-    $scope.createObjectExisting = function() {
-      /*create an object
-       * row obj, table, callback function
-       * on the callback, calling a get object detail afterwards
-       * */
-      mobackCarsQuery.fetchSingle('VOUQU-Swx2_EDDY-', function(data){
-        mobackObj1 = data;
-        $scope.output = data;
-        console.log(data);
-        $scope.$apply();
-      });
-    };
 
 
     $scope.testAddRelation = function() {
-      /*create an object
-       * row obj, table, callback function
-       * on the callback, calling a get object detail afterwards
+      /* testing adding relations
        * */
       mobackCarsQuery.fetchSingle('VOUESuSwx2_EDDY6', function(data){
         var mobackObj1 = data;
         console.log(data);
 
         /*
+        //use this if you want to add one more
         mobackCarsQuery.fetchSingle('VOYqHeSwx2_EDDaY', function(data) {
           var mobackObj2 = data;
           console.log(data);
@@ -168,9 +130,7 @@
             vendor1 = data;
             console.log(data);
 
-
              window.relation = vendor1.relation("cars");
-             //relation.remove(mobackObj1);
              relation.add(mobackObj1);
              //relation.add(mobackObj2);
              console.log(relation.inspect());
@@ -181,17 +141,7 @@
               console.log(relation.inspect());
              });
 
-
-
-
-            //relation.remove(mobackObj1);
-            //console.log(relation.rels());
-
-          //});
-
         });
-
-
 
         $scope.output = data;
         $scope.$apply();
@@ -199,9 +149,7 @@
     };
 
     $scope.testRemoveRelation = function() {
-      /*create an object
-       * row obj, table, callback function
-       * on the callback, calling a get object detail afterwards
+      /* testing removing relations
        * */
       mobackCarsQuery.fetchSingle('VOUESuSwx2_EDDY6', function(data){
         var mobackObj1 = data;
@@ -230,66 +178,6 @@
       });
     };
 
-
-    $scope.getProperties = function() {
-      /*select an existing object
-       * row obj id, table, callback function
-       * on the callback, calling a get object detail afterwards
-       * */
-      var output = "";
-      output += " brand:" + mobackObj1.get('brand');
-      output += " value:" + mobackObj1.get('value');
-      output += " color:" + mobackObj1.get('color');
-      output += " objectId:" + mobackObj1.id;
-
-      $scope.output = output;
-      console.log(output);
-
-      //  });
-    };
-
-
-    $scope.getObject = function() {
-      /*select an existing object
-       * row obj id, table, callback function
-       * on the callback, calling a get object detail afterwards
-       * */
-     // mobackObj1.selectObject("VOUBpeSwx2_EDDY5", "cars", function(data){
-       // console.log(data);
-        mobackObj1.getObject(function(data){
-          $scope.output = data;
-          console.log(data);
-          $scope.$apply()
-        })
-    //  });
-    };
-
-    $scope.removeObject = function() {
-      /*remove object
-      * callback
-      * */
-        mobackObj1.removeObject(function(data){
-        $scope.output = data;
-        console.log(data);
-        $scope.$apply();
-      });
-    };
-
-    $scope.updateObject = function() {
-      /*updateObject
-      * update user object, callback
-      * call login first, then call update user
-      * */
-      var userObj = {
-        "brand" : "mazda",
-        "color" : "blue"
-      };
-      mobackObj1.updateObject(userObj, function(data){
-        $scope.output = data;
-        console.log(data);
-        $scope.$apply()
-      });
-    };
 
     $scope.output = "";
   });

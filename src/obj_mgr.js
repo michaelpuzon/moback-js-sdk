@@ -1,3 +1,10 @@
+/**
+ * Object manager represents one row in a table.
+ * With that one row of data, you can do set function, for setting a paramter, save to save changes.
+ * Object manager also supports parents for one to one pointers, and relations for one to many,
+ * and many to many relationships.
+ * @param table - required parameter to know which table to do operations on.
+ */
 moback.objMgr = function (table) {
   if(table){
     this.className = table;
@@ -15,7 +22,7 @@ moback.objMgr = function (table) {
      * @param rowObj
      * @param callback
      */
-  this.createObject = function (rowObj,callback) {
+  this.createObject = function (rowObj, callback) {
     var url = baseUrl + "objectmgr/api/collections/" + table;
     var headers = {
       'X-Moback-Environment-Key': envKey,
@@ -33,7 +40,7 @@ moback.objMgr = function (table) {
   };
 
     /**
-     * Creates a moback object from the object returned by moback query operation
+     * Creates a moback object from the object returned by moback query operations
      * @param existingObj
      * @returns {moback.objMgr}
      */
@@ -74,14 +81,6 @@ moback.objMgr = function (table) {
     }
   };
 
-  /**
-   * return the current table which this object belongs to
-   * @returns {string} table name
-   */
-  this.getTable = function() {
-    return rowTable;
-  };
-
     /**
      * Sets the properties of the object
      * @param key
@@ -107,17 +106,16 @@ moback.objMgr = function (table) {
   this.get = function(key) {
     if(key == "parent"){
       return parent;
-    } else{
+    } else {
       if(data[key]) {
         return data[key];
-      } else {
-        return ("Property does not exist");
       }
     }
+    return ("Property does not exist");
   };
 
     /**
-     * Resets the key to null
+     * Resets the key to null, and deletes the parameter
      * @param key
      */
   this.unset = function(key) {
@@ -130,11 +128,11 @@ moback.objMgr = function (table) {
     return 'item ' + key + ' unset';
   };
 
-    /**
-     * Saves the object in the table by
-     * making an API call
-     *
-     */
+  /**
+   * Saves the object in the table by
+   * making an API call
+   * @param callback
+   */
   this.save = function(callback) {
     //prepare object to pass to api call
     var postData = {};
@@ -275,7 +273,6 @@ moback.objMgr = function (table) {
     saveAPI(postData, function(){
       self.save(callback);
     });
-
   }
 
 
@@ -296,28 +293,32 @@ moback.objMgr = function (table) {
   };
 
 
-     /**
-     * Removes the object from the table
-     */
-  this.remove = function() {
-      if(rowObjectId){
-          var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
-          var headers = {
-              'X-Moback-Environment-Key': envKey,
-              'X-Moback-Application-Key': appKey
-          };
-          microAjax('DELETE', url, function (res) {
-              console.log(res);
-          }, headers);
-      } else {
-          console.log("Object does not exist");
-      }
+  /**
+   * Removes the object from the table, cloud
+   * @param callback
+   * @returns {string}
+   */
+  this.remove = function(callback) {
+    if(rowObjectId){
+        var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
+        var headers = {
+            'X-Moback-Environment-Key': envKey,
+            'X-Moback-Application-Key': appKey
+        };
+        microAjax('DELETE', url, function (res) {
+          callback(res);
+        }, headers);
+    } else {
+      callback("Object does not exist");
+    }
   };
 
 
   /**
-   * Resets the key to null
-   * @param key
+   * The relation object. This supports add, remove methods for relations.
+   * You can also call the getSaved, to view saved relations for the object.
+   * A inspect method is also available for viewing all relations in the current object.
+   * @param name - will be used as the key for the relations array.
    */
   this.relation = function(name) {
     self.unset(name);
@@ -359,33 +360,16 @@ moback.objMgr = function (table) {
     relateMethods.inspect = function(){
       return relations;
     };
+
     return relateMethods;
   };
 
 
-
   /**
-   * Updates the object with new data passed as an object this method
-   * @param rowObj
-   * @param callback
+   * Internal methoed to see if relations with key name currently exists
+   * @param name
+   * @returns {*}
    */
-  this.updateObject = function (rowObj, callback) {
-    if (rowObjectId && rowTable){
-      var url = baseUrl + rowTable + "/" + rowObjectId;
-      var headers = {
-        'X-Moback-Environment-Key': envKey,
-        'X-Moback-Application-Key': appKey
-      };
-      microAjax('PUT', url, function (res) {
-        callback(res);
-      }, headers, rowObj);
-    } else {
-      callback("Row object id is not set, please select an object first");
-    }
-  };
-
-
-  //see if relations with key name exists
   function getRelationObj(name){
     for (var i = 0; i < relations.length; i++) {
       if (relations[i].name == name){
@@ -398,6 +382,12 @@ moback.objMgr = function (table) {
     //return relObj;
   }
 
+  /**
+   * Constructor object for laying out structure for a relation object
+   * @param name
+   * @returns {{}}
+   * @constructor
+   */
   function Relation(name){
     var relation = {};
     relation.name = name;
@@ -406,7 +396,5 @@ moback.objMgr = function (table) {
     relation.removeQueue = [];
     return relation;
   }
-
-
 
 };
