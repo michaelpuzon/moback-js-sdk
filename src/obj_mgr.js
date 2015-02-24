@@ -55,7 +55,19 @@ moback.objMgr = function (table) {
           var parentObj = new Moback.objMgr(existingObj[prop]['className']);
           parentObj.id = existingObj[prop]['objectId'];
           parent = parentObj;
+        } else if(existingObj[prop].length && existingObj[prop][0]['__type'] &&
+          existingObj[prop][0]['__type'] == "Pointer"){
+          //relations structure
+          var relObj = new Relation(prop);
+          for (var i = 0; i < existingObj[prop].length; i++) {
+            var pointerObj = {};
+            var pointerObj = new Moback.objMgr(existingObj[prop][i].className);
+            pointerObj.id = existingObj[prop][i].objectId;
+            relObj.currentObjects.push(pointerObj);
+          }
+          relations.push(relObj);
         } else {
+          //regular key value
           self.set(prop, existingObj[prop]);
         }
       }
@@ -109,7 +121,13 @@ moback.objMgr = function (table) {
      * @param key
      */
   this.unset = function(key) {
+    if(key == "parent"){
+      parent = null;
+    } else {
       data[key] = null;
+      delete data[key];
+    }
+    return 'item ' + key + ' unset';
   };
 
     /**
@@ -118,15 +136,71 @@ moback.objMgr = function (table) {
      *
      */
   this.save = function(callback) {
-    var headers = {
-      'X-Moback-Environment-Key': envKey,
-      'X-Moback-Application-Key': appKey
-    };
     //prepare object to pass to api call
     var postData = {};
-    for(var key in data){
-      postData[key] = data[key];
+
+    /*relation implementation*/
+    if(relations.length > 0){
+
+      var addRelationArray = [], removeRelationArray = [];
+
+      for (var i = 0; i < relations.length; i++) {
+
+        var name = relations[i].name;
+        var addQueue = [], removeQueue = [];
+
+        for (var j = 0; j < relations[i].removeQueue.length; j++) {
+          var newRelation = {"__type":"Pointer"};
+          newRelation.objectId = relations[i].removeQueue[j].id;
+          newRelation.className = relations[i].removeQueue[j].className;
+          removeQueue.push(newRelation);
+        }
+        if(removeQueue.length > 0 ){
+          relations[i].removeQueue = [];
+          var relationRemoveItem = {};
+          relationRemoveItem.objects = removeQueue;
+          relationRemoveItem['__op'] = "RemoveRelation";
+          relationRemoveItem.name = name;
+          removeRelationArray.push(relationRemoveItem);
+        }
+        for (var j = 0; j < relations[i].addQueue.length; j++) {
+          var newRelation = {"__type":"Pointer"};
+          newRelation.objectId = relations[i].addQueue[j].id;
+          newRelation.className = relations[i].addQueue[j].className;
+          addQueue.push(newRelation);
+        }
+
+        if(addQueue.length > 0 ){
+          var relationAddItem = {};
+          relationAddItem.objects = addQueue;
+          relationAddItem['__op'] = "AddRelation";
+          relationAddItem.name = name;
+          addRelationArray.push(relationAddItem);
+        }
+        //console.log(addRelationArray);
+      }
     }
+    if(removeRelationArray.length > 0){
+      removePointers(removeRelationArray, callback);
+      return;
+    }
+    if(addRelationArray.length > 0){
+      //form objects for api call
+      for (var i = 0; i < addRelationArray.length; i++) {
+        var name = addRelationArray[i].name;
+        delete addRelationArray[i].name;
+        postData[name] = addRelationArray[i];
+      }
+      /*move all addQueue objects to currentObjects*/
+      for (var i = 0; i < relations.length; i++) {
+        if(relations[i].addQueue.length > 0){
+          var addQueueArr = relations[i].addQueue.splice(0, relations[i].addQueue.length);
+          relations[i].currentObjects = relations[i].currentObjects.concat(addQueueArr);
+        }
+      }
+    }
+
+    /*parent, pointer implementation*/
     if(parent != null){
       if(parent.id){
         postData.parent = {
@@ -142,25 +216,67 @@ moback.objMgr = function (table) {
         return;
       }
     }
+
+    /*for each key, assign it to a value*/
+    for(var key in data){
+      postData[key] = data[key];
+    }
+
+    //console.log(postData);
+    //return;
+
+    saveAPI(postData, callback);
+  };
+
+  /**
+   * internal function to call the save api
+   * @param postData - data to post
+   * @param callback
+   */
+  function saveAPI(postData, callback){
+    console.log(callback);
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey
+    };
+
     if(!rowObjectId) {
-        var url = baseUrl + "objectmgr/api/collections/" + table;
-        microAjax('POST', url, function (res) {
-          if(res.objectId){
-            rowObjectId = res.objectId;
-            self.id = res.objectId;
-            self.createdAt = res.createdAt;
-            self.updatedAt = res.updatedAt;
-          }
-          callback(res);
-        }, headers, postData);
+      var url = baseUrl + "objectmgr/api/collections/" + table;
+      microAjax('POST', url, function (res) {
+        if(res.objectId){
+          rowObjectId = res.objectId;
+          self.id = res.objectId;
+          self.createdAt = res.createdAt;
+          self.updatedAt = res.updatedAt;
+        }
+        callback(res);
+      }, headers, postData);
     } else if (rowObjectId && rowTable){
       var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
       microAjax('PUT', url, function (res) {
         callback(res);
       }, headers, postData);
     }
+  }
 
-  };
+  /**
+   * internal function to remove pointers from table
+   * @param pointers
+   * @param callback
+   */
+  function removePointers(pointers, callback){
+    var postData = {};
+    for (var i = 0; i < pointers.length; i++) {
+      var name = pointers[i].name;
+      delete(pointers[i].name);
+      postData[name] = pointers[i];
+    }
+
+    saveAPI(postData, function(){
+      self.save(callback);
+    });
+
+  }
 
 
   /**
@@ -198,6 +314,56 @@ moback.objMgr = function (table) {
       }
   };
 
+
+  /**
+   * Resets the key to null
+   * @param key
+   */
+  this.relation = function(name) {
+    self.unset(name);
+    var relateMethods = {};
+    var relationObj = getRelationObj(name);
+
+    relateMethods.add = function(obj){
+      relationObj.addQueue.push(obj);
+      return 'item relation added';
+    };
+
+    relateMethods.remove =  function(obj){
+      //if item is in the add queue, remove it there
+      var objFound = false;
+      //look for the item in the add queue
+      for (var i = 0; i < relationObj.addQueue.length; i++) {
+        if(relationObj.addQueue[i].id){
+          relationObj.addQueue.splice(i, 1);
+          objFound = true;
+          return 'item relation removed';
+        }
+      }
+      //look for the item in the remove queue
+      for (var i = 0; i < relationObj.currentObjects.length; i++) {
+        if(relationObj.currentObjects[i].id){
+          relationObj.currentObjects.splice(i, 1);
+          objFound = true;
+          relationObj.removeQueue.push(obj);
+          return 'item relation removed';
+        }
+      }
+      return 'item could not be found';
+    };
+
+    relateMethods.getSaved = function(){
+      return relationObj.currentObjects;
+    };
+
+    relateMethods.inspect = function(){
+      return relations;
+    };
+    return relateMethods;
+  };
+
+
+
   /**
    * Updates the object with new data passed as an object this method
    * @param rowObj
@@ -217,5 +383,30 @@ moback.objMgr = function (table) {
       callback("Row object id is not set, please select an object first");
     }
   };
+
+
+  //see if relations with key name exists
+  function getRelationObj(name){
+    for (var i = 0; i < relations.length; i++) {
+      if (relations[i].name == name){
+        return relations[i];
+      }
+    }
+    var relObj = new Relation(name);
+    relations.push(relObj);
+    return relations[relations.length - 1];
+    //return relObj;
+  }
+
+  function Relation(name){
+    var relation = {};
+    relation.name = name;
+    relation.currentObjects = [];
+    relation.addQueue = [];
+    relation.removeQueue = [];
+    return relation;
+  }
+
+
 
 };

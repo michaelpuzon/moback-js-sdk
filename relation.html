@@ -19,8 +19,11 @@
     <button ng-click="createObject2()">create object 2</button>
     <button ng-click="create2Objects()">create 2 objects</button>
     <button ng-click="linkObject()">link obj2 to obj 1</button>
-    <button ng-click="getObject2()">get object 2</button>
-    <button ng-click="testRelation()">assign 2 cars to vendor</button>
+    <button ng-click="getObject2()">get object 2 with parent</button>
+    <br>
+    <button ng-click="testAddRelation()">assign cars to vendor</button>
+    <button ng-click="testRemoveRelation()">remove cars fomr vendor</button>
+    <br>
     <button ng-click="getProperties()">get obj Properties</button>
     <button ng-click="set()">Set Property</button>
     <button ng-click="getObject()">grab object</button>
@@ -123,9 +126,12 @@
        * */
       mobackCommentQuery.fetchSingle('VOuqHeSw7MI5Wyos', function(data){
         obj2 = data;
-        $scope.output = data;
-        console.log(data);
-        $scope.$apply();
+        obj1 = obj2.get('parent');
+        obj1.fetch(function(data){
+          $scope.output = data;
+          console.log(data);
+          $scope.$apply();
+        });
       });
     };
 
@@ -143,23 +149,81 @@
     };
 
 
-    $scope.testRelation = function() {
+    $scope.testAddRelation = function() {
       /*create an object
        * row obj, table, callback function
        * on the callback, calling a get object detail afterwards
        * */
-      mobackCarsQuery.fetchSingle('VOUP8uSwx2_EDDY9', function(data){
+      mobackCarsQuery.fetchSingle('VOUESuSwx2_EDDY6', function(data){
         var mobackObj1 = data;
         console.log(data);
 
-        mobackVendorQuery.fetchSingle('VOutQeSw7MI5Wyoy', function(data){
-          vendor1 = data;
+        /*
+        mobackCarsQuery.fetchSingle('VOYqHeSwx2_EDDaY', function(data) {
+          var mobackObj2 = data;
           console.log(data);
+          */
+
+          mobackVendorQuery.fetchSingle('VOutQeSw7MI5Wyoy', function(data){
+            vendor1 = data;
+            console.log(data);
+
+
+             window.relation = vendor1.relation("cars");
+             //relation.remove(mobackObj1);
+             relation.add(mobackObj1);
+             //relation.add(mobackObj2);
+             console.log(relation.inspect());
+
+
+            vendor1.save(function(data){
+              console.log(data);
+              console.log(relation.inspect());
+             });
+
+
+
+
+            //relation.remove(mobackObj1);
+            //console.log(relation.rels());
+
+          //});
+
         });
 
 
 
+        $scope.output = data;
+        $scope.$apply();
+      });
+    };
 
+    $scope.testRemoveRelation = function() {
+      /*create an object
+       * row obj, table, callback function
+       * on the callback, calling a get object detail afterwards
+       * */
+      mobackCarsQuery.fetchSingle('VOUESuSwx2_EDDY6', function(data){
+        var mobackObj1 = data;
+        console.log(data);
+
+
+        mobackVendorQuery.fetchSingle('VOutQeSw7MI5Wyoy', function(data){
+          vendor1 = data;
+          console.log(data);
+
+
+          window.relation = vendor1.relation("cars");
+          relation.remove(mobackObj1);
+          console.log(relation.inspect());
+
+
+          vendor1.save(function(data){
+            console.log(data);
+            console.log(relation.inspect());
+          });
+
+        });
 
         $scope.output = data;
         $scope.$apply();
