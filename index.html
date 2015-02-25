@@ -8,7 +8,7 @@
   <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 
-  <script type="text/javascript" src="moback.js"></script>
+  <script type="text/javascript" src="dist/moback.js"></script>
   <title>Moback Test Page</title>
 </head>
 <body>
@@ -19,6 +19,7 @@
     <button ng-click="login()">login</button>
     <button ng-click="resetPassword()">reset password</button>
     <button ng-click="updateUser()">update user</button>
+    <button ng-click="logout()">logout</button>
     <p ng-cloak="">{{ output }}</p>
   </div>
 </div>
@@ -65,7 +66,7 @@
        * username, password, callback
        * on the callback, calling a get user detail afterwards
        * */
-      mobackUser1.login("user1", "asdf1234", function(data){
+      mobackUser1.login("user4", "asdf1234", function(data){
         console.log(data);
         mobackUser1.getUserDetails(function(data){
           $scope.output = data;
@@ -86,6 +87,14 @@
         console.log(data);
         $scope.$apply();
       });
+    };
+
+    $scope.logout = function() {
+      /*logout user
+       * */
+      var output = mobackUser1.logout();
+      $scope.output = output;
+      console.log(output);
     };
 
     $scope.updateUser = function() {
