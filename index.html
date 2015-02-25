@@ -30,7 +30,7 @@
 
     /*after creating an app in moback, grab the app key, and dev key*/
     Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
-    //console.log(Moback.showAppKey());
+    console.log(Moback.showAppKey());
 
     var mobackUser1 = new Moback.userMgr();
     //console.log(mobackUser1.showAppKey());
@@ -41,7 +41,6 @@
        * user obj, callback function
        * on the callback, calling a get user detail afterwards
        * */
-      //mobackUser1.createUser("user2","adsf1234","mike@gmail.com","Mike", function(data){
       var userObj = {
         "userId":"user4",
         "password":"asdf1234",
