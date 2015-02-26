@@ -18,7 +18,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['src/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
-          'src/ajax.js', 'src/moback_end.js'],
+          'src/notification_mgr.js', 'src/ajax.js', 'src/moback_end.js'],
         dest: 'dist/moback.js'
       }
     },
