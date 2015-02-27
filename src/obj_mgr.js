@@ -177,26 +177,27 @@ moback.objMgr = function (table) {
         }
         //console.log(addRelationArray);
       }
-    }
-    if(removeRelationArray.length > 0){
-      removePointers(removeRelationArray, callback);
-      return;
-    }
-    if(addRelationArray.length > 0){
-      //form objects for api call
-      for (var i = 0; i < addRelationArray.length; i++) {
-        var name = addRelationArray[i].name;
-        delete addRelationArray[i].name;
-        postData[name] = addRelationArray[i];
+      if(removeRelationArray.length > 0){
+        removePointers(removeRelationArray, callback);
+        return;
       }
-      /*move all addQueue objects to currentObjects*/
-      for (var i = 0; i < relations.length; i++) {
-        if(relations[i].addQueue.length > 0){
-          var addQueueArr = relations[i].addQueue.splice(0, relations[i].addQueue.length);
-          relations[i].currentObjects = relations[i].currentObjects.concat(addQueueArr);
+      if(addRelationArray.length > 0){
+        //form objects for api call
+        for (var i = 0; i < addRelationArray.length; i++) {
+          var name = addRelationArray[i].name;
+          delete addRelationArray[i].name;
+          postData[name] = addRelationArray[i];
+        }
+        /*move all addQueue objects to currentObjects*/
+        for (var i = 0; i < relations.length; i++) {
+          if(relations[i].addQueue.length > 0){
+            var addQueueArr = relations[i].addQueue.splice(0, relations[i].addQueue.length);
+            relations[i].currentObjects = relations[i].currentObjects.concat(addQueueArr);
+          }
         }
       }
     }
+
 
     /*parent, pointer implementation*/
     if(parent != null){
