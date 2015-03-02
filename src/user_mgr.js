@@ -113,6 +113,27 @@ moback.userMgr = function () {
     }
   };
 
+
+  /**
+   * Removes the object from the table, cloud
+   * @param callback
+   * @returns {string}
+   */
+  this.deleteUser = function(callback) {
+    if(userObjectId){
+      var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      var headers = {
+          'X-Moback-Environment-Key': envKey,
+          'X-Moback-Application-Key': appKey
+      };
+      microAjax('DELETE', url, function (res) {
+          callback(res);
+      }, headers);
+    } else {
+        callback("Object does not exist");
+    }
+  };
+
   /**
    * Sends the user an invitation email, to use the app.
    * @param inviteeId
