@@ -25,7 +25,7 @@
  * headers - additional headers, optional
  * postData - postBody, optional
  * */
-function microAjax(method, url, callbackFunction, headers, postData)
+function microAjax(method, url, callbackFunction, headers, postData, fileMode)
 {
   this.bindFunction = function (caller, object) {
     return function() {
@@ -48,7 +48,11 @@ function microAjax(method, url, callbackFunction, headers, postData)
     return false;
   };
 
-  this.postBody = (postData) ? JSON.stringify(postData) : "";
+  if(fileMode){
+    this.postBody = postData;
+  } else {
+    this.postBody = (postData) ? JSON.stringify(postData) : "";
+  }
 
   this.callbackFunction=callbackFunction;
   this.url=url;
@@ -65,7 +69,9 @@ function microAjax(method, url, callbackFunction, headers, postData)
     } else {
       req.open(method, url, true);
     }
-    req.setRequestHeader("Content-Type", "application/json");
+    if(!fileMode){
+      req.setRequestHeader("Content-Type", "application/json");
+    }
     /*add any additional headers here*/
     if(headers){
       for(var key in headers){

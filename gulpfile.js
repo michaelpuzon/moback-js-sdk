@@ -6,10 +6,11 @@ var gulp = require('gulp'),
   watch = require('gulp-watch'),
   clean = require('gulp-clean');
 
+var srcFiles = ['src/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
+  'src/notification_mgr.js', 'src/file_mgr.js', 'src/ajax.js', 'src/moback_end.js'];
 
 gulp.task('build-js', function() {
-  return gulp.src(['src/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
-    'src/ajax.js', 'src/moback_end.js'])
+  return gulp.src(srcFiles)
     .pipe(concat('moback.js'))
     .pipe(concat.header('(function (window) {\n'))
     .pipe(concat.footer('}(window));'))
@@ -20,8 +21,7 @@ gulp.task('build-js', function() {
 });
 
 gulp.task('build-js-dev', function() {
-  return gulp.src(['src/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
-    'src/ajax.js', 'src/moback_end.js'])
+  return gulp.src(srcFiles)
     .pipe(concat('moback.js'))
     .pipe(concat.header('(function (window) {\n'))
     .pipe(concat.footer('}(window));'))
