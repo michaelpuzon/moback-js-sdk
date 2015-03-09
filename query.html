@@ -36,6 +36,7 @@
     <button ng-click="contains()">contains toyota and honda</button>
     <button ng-click="notcontains()">NOT toyota and honda</button>
     <button ng-click="wheeldash()">contains wheel/dashboard</button>
+    <button ng-click="dropTable()">Drop Table</button>
     <p ng-cloak="" style="margin-top: 20px;">{{ output }}</p>
   </div>
 </div>
@@ -45,7 +46,9 @@
   angular.module('Test', ['ngResource']).controller('mobackTesterCtrl', function ($scope ) {
 
     /*after creating an app in moback, grab the app key, and dev key*/
-    Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
+   Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
+   //Moback.initialize("ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl","MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0");
+
 
     var mobackCarsQuery = new Moback.queryMgr('cars');
 
@@ -213,6 +216,12 @@
       $scope.output = output;
       console.log(output);
     };
+
+    $scope.dropTable = function(data){
+        mobackCarsQuery.dropTable(function(data){
+            console.log(data);
+        })
+    }
 
     $scope.output = "";
   });

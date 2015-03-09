@@ -347,8 +347,23 @@ moback.queryMgr = function (table) {
     }
   };
 
-
-
+  /**
+   *    Drops the table associated with the query object
+   */
+  this.dropTable = function(callback) {
+      if (rowTable){
+          var url = baseUrlAPI + "schema/" + rowTable;
+          var headers = {
+              'X-Moback-Environment-Key': envKey,
+              'X-Moback-Application-Key': appKey
+          };
+          microAjax('DELETE', url, function (res) {
+              callback(res);
+          }, headers);
+      } else {
+          callback("Table does not exist, please check the table name");
+      }
+  };
 
 
 };
