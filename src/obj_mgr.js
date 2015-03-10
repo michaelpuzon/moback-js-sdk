@@ -91,6 +91,12 @@ moback.objMgr = function (table) {
     if(key == "parent"){
       parent = value;
       successMsg = "Parent set";
+    } else if(typeof value.getName != "undefined" && value.getName() != false){
+      var fileObj = { __type : "File" };
+      fileObj.name = value.getName();
+      fileObj.url = value.getUrl();
+      data[key] = fileObj;
+      successMsg = "Property set";
     } else {
       data[key] = value;
       successMsg = "Property set";
