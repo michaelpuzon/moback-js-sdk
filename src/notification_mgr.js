@@ -28,8 +28,13 @@ moback.notificationMgr = function(){
     }, headers, notificationObj);
   };
 
-  this.sendAllNotification = function(notificationObj, callback) {
-    //http://moback-stage-481937747.us-west-2.elb.amazonaws.com:8080/notificationmanager/api/alerts/push
+  this.sendAllNotification = function(notificationMessage, callback) {
+    var toPost = {
+      data:{
+        alert: notificationMessage
+      }
+    };
+    toPost.channels = ['__default'];
     var url = baseUrl + "notificationmanager/api/alerts/push";
     var headers = {
       'X-Moback-Environment-Key': envKey,
@@ -37,7 +42,7 @@ moback.notificationMgr = function(){
     };
     microAjax('POST', url, function (res) {
       callback(res);
-    }, headers, notificationObj);
+    }, headers, toPost);
   };
 
 };

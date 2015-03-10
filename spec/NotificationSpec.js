@@ -33,14 +33,22 @@ describe("Moback Notification Manager", function() {
     expect(typeof mobackNotification.sendSingleUserNotification).toBe("function");
   });
 
-  it("should be able to send a moback notification to a user", function () {
+  it("should be able to send a moback notification to a user", function (done) {
     var receiverId = 'user1424897571348';
     var alertMessage = "test alert message";
     mobackNotification.sendSingleUserNotification(receiverId, alertMessage, function(data){
       console.log(data);
-      //expect(data.objectId).toBeTruthy();
+      expect(data.code).toBeTruthy();
       done();
     });
+  });
 
+  it("should be able to send a moback notification to all users", function (done) {
+    var alertMessage = "test alert message to all";
+    mobackNotification.sendAllNotification(alertMessage, function(data){
+      console.log(data);
+      expect(data.code).toBeTruthy();
+      done();
+    });
   });
 });
