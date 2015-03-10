@@ -27,6 +27,8 @@
       <input type="file" id="file-select" name="fileupload" />
       <button type="submit" id="upload-button">Upload</button>
     </form>
+    <button type="button" id="saveObject"> Save Object </button>
+    <button type="button" id="remove-file"> Remove File </button>
     <p id="output" ng-cloak="">{{ output }}</p>
   </div>
 </div>
@@ -37,20 +39,65 @@
     Moback.initialize("ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl","MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0");
     console.log(Moback.showAppKey());
 
+     var mobackFileTestUser = new Moback.userMgr();
+     var userObj = {
+         "userId":"user4",
+         "password":"asdf1234",
+         "email":"mike4@gmail.com",
+         "firstname":"Uday",
+         "lastname":"nayak"
+     };
+     var mobackFile1;
+     var ssotoken;
 
-    $("#file-form").submit(function(){
-      var fileSelect = document.getElementById('file-select');
-      console.log(fileSelect.files);
-      var mobackFile1 = new Moback.fileMgr(fileSelect.files[0]);
-      mobackFile1.save(function(data){
-        console.log(data);
+     mobackFileTestUser.createUser(userObj,function(data){
+         console.log(data);
+     });
+
+     mobackFileTestUser.login("user4", "asdf1234", function(data){
+         console.log(data);
+         ssotoken = mobackFileTestUser.getSessionToken();
+         console.log(ssotoken);
+     });
+
+      $("#file-form").submit(function(){
+          var fileSelect = document.getElementById('file-select');
+          console.log(fileSelect.files);
+          mobackFile1 = new Moback.fileMgr(fileSelect.files[0]);
+          mobackFile1.save(ssotoken,function(data){
+              console.log(data);
+          });
+
+          return false;
       });
 
+      $('#saveObject').click(function(){
+          var mobackObj1 = new Moback.objMgr("Movie");
+          mobackObj1.set("movieName","The Imitation Game1");
+          mobackObj1.set("genre","Thriller");
+          mobackObj1.set("lead", "Benedict Cumberbatch");
+          mobackObj1.set("duration","30 Minutes");
+          mobackObj1.set("MoviePic",mobackFile1);
+          mobackObj1.save(function(data){
+              console.log(data);
+          });
+      });
+
+/*    $("#file-form").submit(function(){
+      var fileSelect = document.getElementById('file-select');
+      console.log(fileSelect.files);
+      mobackFile1 = new Moback.fileMgr(fileSelect.files[0]);
+      mobackFile1.save(ssotoken,function(data){
+        console.log(data);
+      });
       return false;
     });
 
-
-
+    $("#remove-file").click(function(){
+        mobackFile1.removeFile(ssotoken, function(data){
+            console.log(data);
+        })
+    });*/
 
   });
 
@@ -141,7 +188,7 @@
         console.log(data);
         $scope.$apply();
       })
-    }
+    };
 
     $scope.output = "";
 

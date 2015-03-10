@@ -39,13 +39,26 @@ moback.userMgr = function () {
       'X-Moback-Application-Key': appKey
     };
     microAjax('POST', url, function (res) {
-      if(res.response.objectId){
+      if(res.response.objectId && res.ssotoken){
         userObjectId = res.response.objectId;
+        sessionToken = res.ssotoken;
       }
       callback(res);
     }, headers, postData);
   };
 
+  /**
+   * Returns the session token if the user is logged in else returns false
+   * @returns sessionToken or a string
+   */
+  this.getSessionToken = function(){
+      if(sessionToken) {
+          return sessionToken;
+      }
+      else {
+          return "User is not logged in";
+      }
+  };
 
   /**
    * Logs out the user.

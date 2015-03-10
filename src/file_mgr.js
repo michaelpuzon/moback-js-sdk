@@ -6,29 +6,76 @@
 
 moback.fileMgr = function (fileData) {
 
+  var fileUrl = false;
+  var fileName = false;
   /**
    * Creates an object in the table specified in the
    * @param callback
    */
-  this.save = function (callback) {
+  this.save = function (sessionToken, callback) {
     var formData = new FormData();
     console.log(fileData);
     formData.append('file', fileData);
-    //console.log(formData);
-
     var url = baseUrl + "filemanager/api/files/upload";
     var headers = {
       'X-Moback-Environment-Key': envKey,
       'X-Moback-Application-Key': appKey,
-      //'X-Moback-SessionToken-Key': 'bWljaGFlbHArMkBtb2JhY2suY29tIy0xIzE0MjI1MTQ1MDAwMDA4NjQwMDAwMA=='
+      'X-Moback-SessionToken-Key': sessionToken
     };
-
     microAjax('PUT', url, function (res) {
-      //on successful save, save the filename, and the url
+      if(res.url && res.name) {
+          fileUrl = res.url;
+          fileName = res.name;
+      }
       callback(res);
+
     }, headers, formData, true);
   };
 
-  //create a remove function
+  /**
+   * Returns the name of the file
+   * @returns {Name of the file}
+   */
+  this.getName = function(){
+      if(fileName){
+          return fileName;
+      }
+      else {
+          return "File name not available"
+      }
+  };
+
+  /**
+   * Returns the URL of the file
+   * @returns {URL of the file}
+   */
+  this.getUrl = function() {
+      if(fileUrl){
+          return fileUrl;
+      }
+      else {
+          return "File URL not available"
+      }
+  };
+
+  /**
+   * Deletes a file uploaded by the user
+   * @param sessionToken
+   * @param callback
+   */
+  this.removeFile = function(sessionToken, callback) {
+      //check file
+    var url = baseUrl + "filemanager/api/files/file/" + fileName;
+    var headers = {
+       'X-Moback-Environment-Key': envKey,
+       'X-Moback-Application-Key': appKey,
+       'X-Moback-SessionToken-Key': sessionToken
+    };
+    microAjax('DELETE', url, function(res) {
+        fileName = false;
+        fileUrl = false;
+        callback(res);
+    }, headers);
+  };
 
 };

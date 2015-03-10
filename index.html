@@ -67,6 +67,7 @@
        * */
       mobackUser1.login("user4", "asdf1234", function(data){
         console.log(data);
+        console.log(mobackUser1.getSessionToken());
         mobackUser1.getUserDetails(function(data){
           $scope.output = data;
           console.log(data);
