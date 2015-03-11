@@ -2,20 +2,6 @@
  * Complete Test of JavaScript User Manager
  */
 
-/**
- * Test Initialize method
- */
-describe("Moback Global object", function(){
-  it("should be able to instantiate moback object", function() {
-    Moback.initialize(
-      "ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl",
-      "MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0"
-    );
-    var appKeys = Moback.showAppKey();
-    expect(appKeys.appKey).toBe("ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl");
-  });
-});
-
 describe("Moback User Manager Complete Test", function(){
   var mobackUser;
   var userData = {};
@@ -28,26 +14,13 @@ describe("Moback User Manager Complete Test", function(){
     "lastname":"nayak"
   };
   var updObj = {
-      firstname:"Mike",
-      password:"jasmine"
+    firstname:"Mike",
+    password:"jasmine"
   };
-
-  /**
-   * Set timeout
-   */
-
-/*  beforeEach(function(done){
-      // simulate async stuff and wait 10ms
-      setTimeout(function(){
-          done();
-      }, 10);
-
-  });*/
 
   /**
    * Test Instantiation of User Manager
    */
-
   it("should be able to instantiate a moback user", function() {
     var mobackTestUser = new Moback.userMgr();
     expect(typeof mobackTestUser.createUser).toBe("function");
@@ -70,7 +43,6 @@ describe("Moback User Manager Complete Test", function(){
   /**
    * Test user login
    */
-
   it("should login the created user",function(done){
     mobackUser.login(userObj.userId,userObj.password,function(data){
       for(var prop in data) {
@@ -85,7 +57,6 @@ describe("Moback User Manager Complete Test", function(){
   /**
    *  Test get user details
    */
-
   it("should get details of the user logged in",function(done){
     mobackUser.getUserDetails(function(data){
       for(var prop in data) {
@@ -98,10 +69,13 @@ describe("Moback User Manager Complete Test", function(){
     });
   });
 
+  it("should get session of the user logged in",function(){
+    expect(mobackUser.getSessionToken()).toBeTruthy();
+  });
+
   /**
    *  Test reset password
    */
-
   it("should send the user an email to reset password", function(done){
     mobackUser.resetPassword(userData.email,function(data){
       console.log(data);
@@ -113,7 +87,6 @@ describe("Moback User Manager Complete Test", function(){
   /**
    * Test update user
    */
-
   it("should update the details of the user logged in",function(done){
     mobackUser.updateUser(updObj,function(data){
     console.log(data);
@@ -127,6 +100,26 @@ describe("Moback User Manager Complete Test", function(){
       });
       done();
     })
+  });
+
+  /**
+   * Test User Logout
+   */
+  it("should log out the user", function(done){
+    expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
+    it("should not return user details when logged out", function(done){
+      expect(mobackUser.getUserDetails()).toEqual("User object id is not set, please login or create user first");
+      done();
+    });
+    it("should be able to login after logout", function(done){
+      for(var prop in data) {
+        userData[prop] = data[prop];
+      }
+      console.log(data);
+      expect(userData.ssotoken).toBeDefined();
+      done();
+    });
+    done();
   });
 
   it("should delete a user", function(done){
@@ -144,31 +137,6 @@ describe("Moback User Manager Complete Test", function(){
       done();
   });
 
-
-
-  /**
-   * Test User Logout
-   */
-/*   it("should log out the user", function(done){
-     expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
-       it("should not return user details when logged out", function(done){
-           expect(mobackUser.getUserDetails()).toEqual("User object id is not set, please login or create user first");
-           done();
-       });
-       it("should be able to login after logout", function(done){
-           for(var prop in data) {
-               userData[prop] = data[prop];
-           }
-           console.log(data);
-           expect(userData.ssotoken).toBeDefined();
-           done();
-       });
-     done();
-   });*/
-
-
-    //test user deletion
-    //try logging in again, and you shoud get error
 
   /**
    * Test sending invites

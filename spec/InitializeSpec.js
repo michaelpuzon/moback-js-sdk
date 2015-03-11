@@ -3,8 +3,8 @@
  */
 
 describe("Moback Global object", function(){
-    var appKey = "ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl";
-    var devKey = "MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0";
+    var appKey = "MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk";
+    var devKey = "NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy";
 
     it("should be able to instantiate moback object", function() {
         Moback.initialize(appKey, devKey);

@@ -5,17 +5,6 @@
 /**
  * Test Initialize method
  */
-describe("Moback Global object", function(){
-    it("should be able to instantiate moback object", function() {
-        Moback.initialize(
-            "ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl",
-            "MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0"
-        );
-        var appKeys = Moback.showAppKey();
-        expect(appKeys.appKey).toBe("ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl");
-    });
-});
-
 describe("Testing Moback Objects Manager", function(){
     var mobackTestObject;
     var moObj = {
@@ -41,13 +30,15 @@ describe("Testing Moback Objects Manager", function(){
         mobackTestObject.unset("Lead");
         expect(mobackTestObject.get("Lead")).toEqual("Property does not exist");
         mobackTestObject.set("lead","Benedict Cumberbatch");
+        expect(mobackTestObject.get("lead")).toEqual("Benedict Cumberbatch");
         mobackTestObject.set("genre","Thriller");
+        expect(mobackTestObject.get("genre")).toEqual("Thriller");
         mobackTestObject.set("duration","30 Minutes");
         done();
     });
 
     /**
-     * To test if the objectwas successfully saved
+     * To test if the object was successfully saved
      */
     it("should save an object" ,function(done){
         mobackTestObject.save(function(data){
