@@ -73,6 +73,10 @@ describe("Moback User Manager Complete Test", function(){
         });
     });
 
+    it("should get session of the user logged in",function(){
+      expect(mobackUser.getSessionToken()).toBeTruthy();
+    });
+
     /**
      *  Test reset password
      */
@@ -88,7 +92,6 @@ describe("Moback User Manager Complete Test", function(){
     /**
      * Test update user
      */
-
     it("should update the details of the user logged in", function (done) {
         mobackUser.updateUser(updObj, function (data) {
             console.log(data);
@@ -114,7 +117,6 @@ describe("Moback User Manager Complete Test", function(){
             expect(mobackUser.getUserDetails()).toEqual("User object id is not set, please login or create user first");
             done();
         });
-
         done();
     });
 

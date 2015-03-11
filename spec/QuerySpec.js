@@ -2,19 +2,7 @@
  * Complete Test of JavaScript Query Manager
  */
 
-/**
- * Test Initialize method
- */
-describe("Moback Global object", function(){
-  var appKey = "ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl";
-  var devKey = "MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0";
 
-  it("should be able to instantiate moback object", function() {
-       Moback.initialize(appKey, devKey);
-       var appKeys = Moback.showAppKey();
-       expect(appKeys.appKey).toBe(appKey);
-  });
-});
 
 /**
  * Testing the complete query object
@@ -27,62 +15,76 @@ describe("Moback Query Manager", function() {
   var leads = ['Kevin Spacey', 'Brad Pitt', 'George Clooney', 'Benedict Cumberbatch', 'Johnny Depp'];
   var genre = ['Thriller', 'Horror', 'Comedy', 'Drama','Romance'];
   var movies = ['Gone Girl', 'The Imitation Game', 'Its a Wonderful Life', 'The Illusionist', 'Sherlock'];
-  /**
-   * Test instantiation of a Moback object
-   */
-  it("should be able to instantiate a moback object", function(done) {
-      for(var i=1; i<=10; i++) {
-          mobackObjects[i] = new Moback.objMgr("Movie");
-          expect(typeof mobackObjects[i].createObject).toBe("function");
-      }
-      done();
-  });
-
-  /**
-   * Test set property
-   */
-
-  it("should set the properties of all the objects",function(done){
-      var addNum = 100;
-      var duration = 500;
-      for(var j=1; j<=10;j++) {
-          duration += addNum;
-          mobackObjects[j].set("MovieName", movies[Math.floor(Math.random() * movies.length)]);
-          if(Math.random() > 0.5){
-              mobackObjects[j].set("Genre", genre[Math.floor(Math.random() * genre.length)]);
-          }
-          mobackObjects[j].set("Duration", duration);
-          mobackObjects[j].set("Lead", leads[Math.floor(Math.random() * leads.length)]);
-          console.log(mobackObjects[j].get("MovieName"));
-          expect(mobackObjects[j].get('Duration')).toEqual(duration);
-      }
-      done();
-  });
 
 
-  /**
-   * Test saving objets
-   */
-
-  it("should save all the objects",function(done){
-      for(var k=1;k<=10;k++){
-          mobackObjects[k].save(function (data) {
-              expect(data.objectId).toBeTruthy();
-              var counter = 1;
-              mobackObjects[counter].set("objectId", data.objectId);
-              counter++;
-              done();
-          });
-      }
-  });
   /**
    * Test instatntiation of Moback Query object
    */
   it("should instantiate a Moback query object", function(done){
-      mobackQuery = new Moback.queryMgr('Movie');
-      mobackQuerySecond = new Moback.queryMgr('Movie');
-      expect(typeof mobackQuery.fetch).toBe("function");
+    mobackQuery = new Moback.queryMgr('Movie');
+    mobackQuerySecond = new Moback.queryMgr('Movie');
+    expect(typeof mobackQuery.fetch).toBe("function");
+    done();
+  });
+
+  it("should drop the table before object creations", function(done){
+    mobackQuery.dropTable(function(data){
+      console.log(data);
+      expect(data.hasOwnProperty("success")).toBeFalsy();
       done();
+    })
+  });
+
+
+  describe("Create Moback Objects, to use the Query for later on", function(){
+    /**
+     * Test instantiation of a Moback object
+     */
+    it("should be able to instantiate a moback object", function(done) {
+      for(var i=1; i<=10; i++) {
+        mobackObjects[i] = new Moback.objMgr("Movie");
+        expect(typeof mobackObjects[i].createObject).toBe("function");
+      }
+      done();
+    });
+
+    /**
+     * Test set property
+     */
+
+    it("should set the properties of all the objects",function(done){
+      var addNum = 100;
+      var duration = 500;
+      for(var j=1; j<=10;j++) {
+        duration += addNum;
+        mobackObjects[j].set("MovieName", movies[Math.floor(Math.random() * movies.length)]);
+        if(Math.random() > 0.5){
+          mobackObjects[j].set("Genre", genre[Math.floor(Math.random() * genre.length)]);
+        }
+        mobackObjects[j].set("Duration", duration);
+        mobackObjects[j].set("Lead", leads[Math.floor(Math.random() * leads.length)]);
+        console.log(mobackObjects[j].get("MovieName"));
+        expect(mobackObjects[j].get('Duration')).toEqual(duration);
+      }
+      done();
+    });
+
+
+    /**
+     * Test saving objets
+     */
+
+    it("should save all the objects",function(done){
+      for(var k=1;k<=10;k++){
+        mobackObjects[k].save(function (data) {
+          expect(data.objectId).toBeTruthy();
+          var counter = 1;
+          mobackObjects[counter].set("objectId", data.objectId);
+          counter++;
+          done();
+        });
+      }
+    });
   });
 
   /**
