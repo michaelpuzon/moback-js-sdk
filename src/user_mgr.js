@@ -107,7 +107,7 @@ moback.userMgr = function () {
   };
 
   /**
-   * Update user information. Expects an update Object, which will be similar to object used for registration.
+   * Update user information. Expects an update Objects, which will be similar to object used for registration.
    * @param updateObject
    * @param callback
    */
@@ -143,7 +143,7 @@ moback.userMgr = function () {
           callback(res);
       }, headers);
     } else {
-        callback("Object does not exist");
+        callback("Objects does not exist");
     }
   };
 

@@ -316,7 +316,7 @@ moback.objMgr = function (table) {
           callback(res);
         }, headers);
     } else {
-      callback("Object does not exist");
+      callback("Objects does not exist");
     }
   };
 

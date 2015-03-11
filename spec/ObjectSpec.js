@@ -16,7 +16,7 @@ describe("Moback Global object", function(){
     });
 });
 
-describe("Testing Moback Object Manager", function(){
+describe("Testing Moback Objects Manager", function(){
     var mobackTestObject;
     var moObj = {
         "movieName" : "The Imitation Game"
@@ -24,7 +24,7 @@ describe("Testing Moback Object Manager", function(){
     var objData = {};
 
     /**
-     * Test object instantiation of Object Manager
+     * Test object instantiation of Objects Manager
      */
     it("should be able to instantiate a moback object", function(done) {
         mobackTestObject = new Moback.objMgr("Movie");

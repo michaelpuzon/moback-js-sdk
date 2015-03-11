@@ -78,6 +78,7 @@
           mobackObj1.set("lead", "Benedict Cumberbatch");
           mobackObj1.set("duration","30 Minutes");
           mobackObj1.set("MoviePic",mobackFile1);
+          console.log(mobackObj1.get("MoviePic"));
           mobackObj1.save(function(data){
               console.log(data);
           });
