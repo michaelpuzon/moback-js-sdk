@@ -25,7 +25,7 @@ module.exports = function(grunt) {
     doxx: {
       all: {
         src: 'src',
-        target: 'docs',
+        target: 'generated-docs',
         options: {
           title: 'Moback Javascript SDK Documentation'
         }
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
     },
     clean: {
       build: {
-        src: ["dist", "docs"]
+        src: ["dist", "generated-docs"]
       },
       dev: {
         src: ["dist", "tmp"]
