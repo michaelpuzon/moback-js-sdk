@@ -3,11 +3,8 @@
  * @param fileName - filename to be used for the file
  * @param fileData - the actual file data
  */
-
-moback.fileMgr = function (fileData) {
-
+moback.fileMgr = function (fileData, fileName) {
   var fileUrl = false;
-  var fileName = false;
   /**
    * Creates an object in the table specified in the
    * @param callback
@@ -15,7 +12,11 @@ moback.fileMgr = function (fileData) {
   this.save = function (sessionToken, callback) {
     var formData = new FormData();
     console.log(fileData);
-    formData.append('file', fileData);
+    if(fileName){
+      formData.append('file', fileData, fileName);
+    } else {
+      formData.append('file', fileData);
+    }
     var url = baseUrl + "filemanager/api/files/upload";
     var headers = {
       'X-Moback-Environment-Key': envKey,

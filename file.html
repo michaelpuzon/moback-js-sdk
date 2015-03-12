@@ -36,7 +36,7 @@
 
   $(document).ready(function(){
 
-    Moback.initialize("ODVkM2ZmODEtNmVhMS00MDU5LTg5NzQtMzg2ODU2MzVmMTdl","MWUyN2RjMDAtOWUwMC00ODQ4LTk1MTMtZTZlNWFhMTlhNjQ0");
+    Moback.initialize("MDMzZGQxMWUtNDFiYy00YTkyLWJkMTMtNDk0YjZhYzg1NThk","NDczMjI5NWQtNjhkMi00ZDcwLWE4YzItYTQ2YzI2ZWI1YTMy");
     console.log(Moback.showAppKey());
 
      var mobackFileTestUser = new Moback.userMgr();
@@ -50,17 +50,15 @@
      var mobackFile1;
      var ssotoken;
 
-     mobackFileTestUser.createUser(userObj,function(data){
-         console.log(data);
-     });
-
-     mobackFileTestUser.login("user4", "asdf1234", function(data){
+     mobackFileTestUser.login("user1426115310038", "jasmine", function(data){
          console.log(data);
          ssotoken = mobackFileTestUser.getSessionToken();
          console.log(ssotoken);
      });
 
-      $("#file-form").submit(function(){
+
+    /*
+    $("#file-form").submit(function(){
           var fileSelect = document.getElementById('file-select');
           console.log(fileSelect.files);
           mobackFile1 = new Moback.fileMgr(fileSelect.files[0]);
@@ -70,6 +68,23 @@
 
           return false;
       });
+      */
+
+    $("#file-form").submit(function(){
+      //var fileSelect = document.getElementById('file-select');
+      //console.log(fileSelect.files);
+      var content = '<a id="a"><b id="b">hey!</b></a>'; // the body of the new file...
+      var blob = new Blob([content], { type: "text/xml"});
+      //mobackFile1 = new Moback.fileMgr(fileSelect.files[0]);
+      mobackFile1 = new Moback.fileMgr(blob, "test.xml");
+      console.log(blob);
+      mobackFile1.save(ssotoken,function(data){
+        console.log(data);
+      });
+
+
+      return false;
+    });
 
       $('#saveObject').click(function(){
           var mobackObj1 = new Moback.objMgr("Movie");
