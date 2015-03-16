@@ -32,8 +32,7 @@ describe("Moback File Manager", function() {
           for(var prop in data) {
             userData[prop] = data[prop];
           }
-          console.log(data);
-          expect(data.objectId).toBeTruthy();
+          expect(data.code).toBe("1000");
           done();
         });
       });

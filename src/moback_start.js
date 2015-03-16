@@ -4,6 +4,7 @@
   var appKey = '';
   var envKey = '';
   var baseUrl = 'http://moback-stage-481937747.us-west-2.elb.amazonaws.com:8080/';
+  //var baseUrl = 'https://api.moback.com/';
 
   moback.initialize = function (newAppKey, newEnvKey) {
     appKey = newAppKey;

@@ -12,7 +12,8 @@ moback.userMgr = function () {
    * @param callback to run, with success message being returned.
    */
   this.createUser = function (userObj, callback) {
-    var url = baseUrl + "objectmgr/api/collections/__appUsers";
+    //var url = baseUrl + "objectmgr/api/collections/__appUsers";
+    var url = baseUrl + "usermanager/api/users/signup";
     var headers = {
       'X-Moback-Environment-Key': envKey,
       'X-Moback-Application-Key': appKey
@@ -49,15 +50,13 @@ moback.userMgr = function () {
 
   /**
    * Returns the session token if the user is logged in else returns false
-   * @returns sessionToken or a string
+   * @returns sessionToken or false
    */
   this.getSessionToken = function(){
       if(sessionToken) {
           return sessionToken;
       }
-      else {
-          return "User is not logged in";
-      }
+      return false;
   };
 
   /**
@@ -75,10 +74,12 @@ moback.userMgr = function () {
    */
   this.getUserDetails = function (callback) {
     if (userObjectId){
-      var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      var url = baseUrl + "usermanager/api/users/user";
       var headers = {
         'X-Moback-Environment-Key': envKey,
-        'X-Moback-Application-Key': appKey
+        'X-Moback-Application-Key': appKey,
+        'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('GET', url, function (res) {
         callback(res);
@@ -113,10 +114,12 @@ moback.userMgr = function () {
    */
   this.updateUser = function (updateObject, callback) {
     if (userObjectId){
-      var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      var url = baseUrl + "usermanager/api/users/user";
       var headers = {
         'X-Moback-Environment-Key': envKey,
-        'X-Moback-Application-Key': appKey
+        'X-Moback-Application-Key': appKey,
+        'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('PUT', url, function (res) {
         callback(res);

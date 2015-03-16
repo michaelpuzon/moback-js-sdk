@@ -23,7 +23,7 @@ describe("Moback Notification Manager", function() {
         for (var prop in data) {
           userData[prop] = data[prop];
         }
-        expect(data.objectId).toBeTruthy();
+        expect(data.code).toBe("1000");
         done();
       })
     });

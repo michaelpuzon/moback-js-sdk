@@ -2,19 +2,19 @@
  * Test the user manager
  */
 
-describe("Moback User Manager Complete Test", function(){
+describe("Moback User Manager", function(){
   var mobackUser;
   var userData = {};
   var timestamp = new Date().getTime();
   var userObj = {
     "userId":"user" + timestamp,
     "password":"asdf1234",
-    "email":"mike" + timestamp + "@gmail.com",
-    "firstname":"Uday",
-    "lastname":"nayak"
+    "email":"michaelp+" + timestamp + "@moback.com",
+    "firstName":"Uday",
+    "lastName":"Nayak"
   };
   var updObj = {
-    firstname:"Mike",
+    firstName:"Mike",
     password:"jasmine"
   };
 
@@ -37,7 +37,7 @@ describe("Moback User Manager Complete Test", function(){
             for (var prop in data) {
                 userData[prop] = data[prop];
             }
-            expect(data.objectId).toBeTruthy();
+            expect(data.code).toBe("1000");
             done();
         })
     });
@@ -51,7 +51,6 @@ describe("Moback User Manager Complete Test", function(){
             for (var prop in data) {
                 userData[prop] = data[prop];
             }
-            console.log(data);
             expect(userData.ssotoken).toBeDefined();
             done();
         });
@@ -66,7 +65,8 @@ describe("Moback User Manager Complete Test", function(){
             for (var prop in data) {
                 userData[prop] = data[prop];
             }
-            console.log(data);
+            expect(userData.objectId).toBeDefined();
+            expect(userData.email).toBeDefined();
             expect(userData.objectId).toEqual(data.objectId);
             expect(userData.email).toEqual(data.email);
             done();
@@ -80,9 +80,8 @@ describe("Moback User Manager Complete Test", function(){
     /**
      *  Test reset password
      */
-
     it("should send the user an email to reset password", function (done) {
-        mobackUser.resetPassword(userData.email, function (data) {
+        mobackUser.resetPassword(userObj.email, function (data) {
             console.log(data);
             expect(data.message).toEqual("resetPassword Operation Successful");
             done();
