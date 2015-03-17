@@ -11,15 +11,14 @@ describe("Moback Notification Manager", function() {
     "firstname": "Uday",
     "lastname": "nayak"
   };
-  var updObj = {
-    firstname: "Mike",
-    password: "jasmine"
-  };
 
   describe("create a temporary user to send notifications to", function(){
     it("should create a user", function (done) {
       mobackUser = new Moback.userMgr();
-      mobackUser.createUser(userObj, function (data) {
+      for(var key in userObj){
+        mobackUser.set(key, userObj[key]);
+      }
+      mobackUser.createUser(function (data) {
         for (var prop in data) {
           userData[prop] = data[prop];
         }
@@ -31,7 +30,6 @@ describe("Moback Notification Manager", function() {
     /**
      * Test user login
      */
-
     it("should login the created user", function (done) {
       mobackUser.login(userObj.userId, userObj.password, function (data) {
         for (var prop in data) {
@@ -42,7 +40,6 @@ describe("Moback Notification Manager", function() {
         done();
       });
     });
-
   });
 
   it("should be able to instantiate a moback notification obj", function () {

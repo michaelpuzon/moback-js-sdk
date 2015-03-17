@@ -11,6 +11,13 @@ moback.userMgr = function () {
       return "Property is set";
   };
 
+  this.get = function(key){
+    if(data[key]) {
+      return data[key];
+    }
+    return false;
+  };
+
   /**
    * creates a moback user
    * @param {Object} userObj has to have some required fields(userId, email, password)
