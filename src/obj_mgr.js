@@ -3,7 +3,10 @@
  * With that one row of data, you can do set function, for setting a paramter, save to save changes.
  * Object manager also supports parents for one to one pointers, and relations for one to many,
  * and many to many relationships.
- * @param table - required parameter to know which table to do operations on.
+ * @param {String} table Required parameter to know which table to do operations on.
+ * @property id The object id of the object
+ * @property createdAt The object's created at date
+ * @property updatedAt The object's updated at date
  */
 moback.objMgr = function (table) {
   if(table){
@@ -19,8 +22,8 @@ moback.objMgr = function (table) {
     /**
      * Creates an object in the table specified in the
      * constructor.
-     * @param rowObj
-     * @param callback
+     * @param {Object} rowObj
+     * @param {Function} callback
      */
   this.createObject = function (rowObj, callback) {
     var url = baseUrl + "objectmgr/api/collections/" + table;
@@ -41,8 +44,8 @@ moback.objMgr = function (table) {
 
     /**
      * Creates a moback object from the object returned by moback query operations
-     * @param existingObj
-     * @returns {moback.objMgr}
+     * @param {Object} existingObj
+     * @returns {moback.objMgr} Returns a moback object
      */
   this.createFromExistingObject = function(existingObj){
     //var existingObj = this;
@@ -83,8 +86,8 @@ moback.objMgr = function (table) {
 
     /**
      * Sets the properties of the object
-     * @param key
-     * @param value
+     * @param {String} key
+     * @param {Object} value Value can be string, object, number, boolean
      */
   this.set = function(key, value) {
     var successMsg = "";
@@ -106,7 +109,7 @@ moback.objMgr = function (table) {
 
     /**
      * Returns the value of the property passed to this method
-     * @param key
+     * @param {String} key Key used to the parameter of object
      * @returns {*}
      */
   this.get = function(key) {
@@ -122,7 +125,7 @@ moback.objMgr = function (table) {
 
     /**
      * Resets the key to null, and deletes the parameter
-     * @param key
+     * @param {String} key
      */
   this.unset = function(key) {
     if(key == "parent"){
@@ -137,7 +140,7 @@ moback.objMgr = function (table) {
   /**
    * Saves the object in the table by
    * making an API call
-   * @param callback
+   * @param {Function} callback
    */
   this.save = function(callback) {
     //prepare object to pass to api call
@@ -235,8 +238,8 @@ moback.objMgr = function (table) {
 
   /**
    * internal function to call the save api
-   * @param postData - data to post
-   * @param callback
+   * @param {Object} postData - data to post
+   * @param {Function} callback
    */
   function saveAPI(postData, callback){
     console.log(callback);
@@ -266,8 +269,8 @@ moback.objMgr = function (table) {
 
   /**
    * internal function to remove pointers from table
-   * @param pointers
-   * @param callback
+   * @param {Array} pointers
+   * @param {Function} callback
    */
   function removePointers(pointers, callback){
     var postData = {};
@@ -285,7 +288,7 @@ moback.objMgr = function (table) {
 
   /**
    * Retrieve the existing object from the cloud.
-   * @param callback
+   * @param {Function} callback
    */
   this.fetch = function(callback) {
       var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
@@ -302,8 +305,8 @@ moback.objMgr = function (table) {
 
   /**
    * Removes the object from the table, cloud
-   * @param callback
-   * @returns {string}
+   * @param {Function} callback
+   * @returns {string} output message
    */
   this.remove = function(callback) {
     if(rowObjectId){
@@ -325,7 +328,7 @@ moback.objMgr = function (table) {
    * The relation object. This supports add, remove methods for relations.
    * You can also call the getSaved, to view saved relations for the object.
    * A inspect method is also available for viewing all relations in the current object.
-   * @param name - will be used as the key for the relations array.
+   * @param {String} name Will be used as the key for the relations array.
    */
   this.relation = function(name) {
     self.unset(name);
@@ -374,7 +377,7 @@ moback.objMgr = function (table) {
 
   /**
    * Internal methoed to see if relations with key name currently exists
-   * @param name
+   * @param {String} name
    * @returns {*}
    */
   function getRelationObj(name){
@@ -386,13 +389,12 @@ moback.objMgr = function (table) {
     var relObj = new Relation(name);
     relations.push(relObj);
     return relations[relations.length - 1];
-    //return relObj;
   }
 
   /**
    * Constructor object for laying out structure for a relation object
-   * @param name
-   * @returns {{}}
+   * @param {String} name
+   * @returns {{}} Relation object
    * @constructor
    */
   function Relation(name){

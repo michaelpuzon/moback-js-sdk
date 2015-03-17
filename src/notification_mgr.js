@@ -1,14 +1,14 @@
 /**
- * Notification manager allows you to send notifications via the JS sdk.
+ * Notification manager allows you to send notifications to users via the JS sdk.
  * It does not allow to receive notifications, at the moment.
  */
 moback.notificationMgr = function(){
 
   /**
    * Sends a notification to a single user
-   * @param receiverId - userId of receiver
-   * @param notificationMessage
-   * @param callback
+   * @param {String} receiverId given userId of receiver
+   * @param {String} notificationMessage
+   * @param {Function} callback
    */
   this.sendSingleUserNotification = function(receiverId, notificationMessage, callback) {
     var notificationObj = {
@@ -28,6 +28,11 @@ moback.notificationMgr = function(){
     }, headers, notificationObj);
   };
 
+  /**
+   * Sends a notification to all users in the app
+   * @param {String} notificationMessage
+   * @param {Function} callback
+   */
   this.sendAllNotification = function(notificationMessage, callback) {
     var toPost = {
       data:{

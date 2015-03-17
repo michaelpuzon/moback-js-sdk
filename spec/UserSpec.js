@@ -82,7 +82,6 @@ describe("Moback User Manager", function(){
      */
     it("should send the user an email to reset password", function (done) {
         mobackUser.resetPassword(userObj.email, function (data) {
-            console.log(data);
             expect(data.message).toEqual("resetPassword Operation Successful");
             done();
         })
@@ -93,11 +92,10 @@ describe("Moback User Manager", function(){
      */
     it("should update the details of the user logged in", function (done) {
         mobackUser.updateUser(updObj, function (data) {
-            console.log(data);
-            expect(data.updatedAt).toBeDefined();
+            expect(data.code).toBe("1000");
             it("Should match details of the user when fecthed", function (done) {
                 mobackUser.getUserDetails(function (data) {
-                    expect(data.firstname).toEqual(updObj.firstname);
+                    expect(data.firstName).toEqual(updObj.firstName);
                     expect(data.password).toEqual(updObj.password);
                     done();
                 });

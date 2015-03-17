@@ -116,9 +116,7 @@ describe("Moback Query Manager", function() {
    */
   it("should get count of the number of records in the table", function(done){
       mobackQuery.getCount(function(data){
-          console.log("Count of the records in the table");
-          console.log(data);
-          expect(data.results.length).toEqual(10);
+          expect(data).toEqual(10);
           done();
       })
   });

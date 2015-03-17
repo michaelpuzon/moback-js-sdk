@@ -2,7 +2,7 @@
  * The Query manager object. This object allows you to run all sorts of queries in a table.
  * Pass table parameter on query object creation to use right away.
  * If table parameter is omitted, please use set table function afterwards.
- * @param table - table name
+ * @param {String} table Table name to use for all query operations
  */
 moback.queryMgr = function (table) {
   var baseUrlAPI = baseUrl + 'objectmgr/api/';
@@ -14,11 +14,20 @@ moback.queryMgr = function (table) {
   var keys = false;
   var queryMode = "and";
 
+  /**
+   * Change the table name currently being used by the query mgr object
+   * @param {String} table New table name
+   * @returns {string}
+   */
   this.setTable = function (table) {
     rowTable = table;
     return "Query object has been changed to table " + table;
   };
 
+  /**
+   * Fetches an array of moback objects, based  on the current query parameters
+   * @param {Function} callback
+   */
   this.fetch = function (callback) {
     if (rowTable){
       var query = "?where=";
@@ -68,6 +77,11 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Fetches a single moback object in the table
+   * @param {String} rowId Required object id of the object in the table
+   * @param {Function} callback
+   */
   this.fetchSingle = function (rowId, callback) {
     if (rowTable){
       var url = baseUrlAPI + "collections/" + rowTable + "/" + rowId;
@@ -85,6 +99,10 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Returns the total number of rows in a table
+   * @param {Function} callback
+   */
   this.getCount = function (callback) {
     if (rowTable){
       var url = baseUrlAPI + "collections/" + rowTable;
@@ -93,13 +111,23 @@ moback.queryMgr = function (table) {
         'X-Moback-Application-Key': appKey
       };
       microAjax('GET', url, function (res) {
-        callback(res);
+        if(res.results){
+          callback(res.results.length);
+        } else {
+          callback(0);
+        }
       }, headers);
     } else {
       callback("Query object is not set, please set a query object first");
     }
   };
 
+  /**
+   * Set's a filter to the query so the key should equal to the value.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
   this.equalTo = function (key, value){
     if (key && value){
       var newFilter = {};
@@ -111,6 +139,12 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Set's a filter to the query so the key should NOT equal to the value.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
   this.notEqualTo = function (key, value){
     if (key && value){
       var newFilter = {};
@@ -122,6 +156,13 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Set's a filter to the query so the key should be greater than the value.
+   * Please use this filter on numeric values only.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
   this.greaterThan = function (key, value){
     if (key  && value){
       var newFilter = {};
@@ -133,6 +174,13 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Set's a filter to the query so the key should be less than the value.
+   * Please use this filter on numeric values only.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
   this.lessThan = function (key, value){
     if (key && value){
       var newFilter = {};
@@ -144,6 +192,13 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Set's a filter to the query so the key should be greater or equal to the value.
+   * Please use this filter on numeric values only.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
   this.greaterThanOrEqualTo = function (key, value){
     if (key  && value){
       var newFilter = {};
@@ -155,6 +210,13 @@ moback.queryMgr = function (table) {
     }
   };
 
+  /**
+   * Set's a filter to the query so the key should be less or equal to the value.
+   * Please use this filter on numeric values only.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
   this.lessThanOrEqualTo = function (key, value){
     if (key && value){
       var newFilter = {};
@@ -168,15 +230,15 @@ moback.queryMgr = function (table) {
 
   /**
    * Exists, filters the query so the value for the table has to exist
-   * @param value
+   * @param {String} key Key column of the table
    * @returns {string} message
    */
-  this.exists = function (value){
-    if (value){
+  this.exists = function (key){
+    if (key){
       var newFilter = {};
-      newFilter[value] = {'$exists' : true};
+      newFilter[key] = {'$exists' : true};
       filters.push(newFilter);
-      return ("Added filter: exists " + value);
+      return ("Added filter: exists " + key);
     } else {
       return ("value for exists has to be set");
     }
@@ -184,30 +246,42 @@ moback.queryMgr = function (table) {
 
   /**
    * Does not exists, filters the query so the value for the table has to be empty or null
-   * @param value
+   * @param {String} key Key column of the table
    * @returns {string} message
    */
-  this.doesNotExist = function (value){
-    if (value){
+  this.doesNotExist = function (key){
+    if (key){
       var newFilter = {};
-      newFilter[value] = {'$exists' : false};
+      newFilter[key] = {'$exists' : false};
       filters.push(newFilter);
-      return ("Added filter: does not exist " + value);
+      return ("Added filter: does not exist " + key);
     } else {
       return ("value for does not exist has to be set");
     }
   };
 
-
+  /**
+   * Returns all the current filters applied to the query
+   * @returns {Array}
+   */
   this.getFilters = function (){
     return filters;
   };
 
+  /**
+   * Resets all the current filters applied to the query
+   * @returns {string} success message
+   */
   this.resetFilters = function (){
     filters = [];
     return ("filters reset");
   };
 
+  /**
+   * Limits the number of rows returned by the query
+   * @param {Number} value Numbers of rows to be returned
+   * @returns {string}
+   */
   this.limit = function (value){
     if (value){
       limit = value;
@@ -219,7 +293,7 @@ moback.queryMgr = function (table) {
 
   /**
    * Implements skip on the query. To skip first 5, pass 5 to value
-   * @param value expects number value. Set to 0 or false to disable
+   * @param {Number} value expects number value. Set to 0 or false to disable
    * @returns {string}
    */
   this.skip = function (value){
@@ -233,7 +307,7 @@ moback.queryMgr = function (table) {
 
   /**
    * Sets the query mode to 'and' or 'or'
-   * @param value and/or
+   * @param {String} value and/or
    * @returns {string}
    */
   this.queryMode = function (value){
@@ -247,13 +321,13 @@ moback.queryMgr = function (table) {
 
   /**
    * Implements the ascending order of the column on the query.
-   * @param value expects paramter/column value.
+   * @param {String} key Key column of the table
    * @returns {string}
    */
-  this.ascending = function (value){
-    if (value){
-      order = value;
-      return ("Set ascending mode for " + value);
+  this.ascending = function (key){
+    if (key){
+      order = key;
+      return ("Set ascending mode for " + key);
     } else {
       return ("value has to be set");
     }
@@ -261,13 +335,13 @@ moback.queryMgr = function (table) {
 
   /**
    * Implements the descending order of the column on the query.
-   * @param value expects paramter/column value.
+   * @param {String} key Key column of the table
    * @returns {string}
    */
-  this.descending = function (value){
-    if (value){
-      order = "-" + value;
-      return ("Set descending mode for " + value);
+  this.descending = function (key){
+    if (key){
+      order = "-" + key;
+      return ("Set descending mode for " + key);
     } else {
       return ("value has to be set");
     }
@@ -275,7 +349,7 @@ moback.queryMgr = function (table) {
 
   /**
    * Only return the columns selected
-   * @param value expects paramter/column value.
+   * @param {Arrays/String} value Array of key columns of the table or Single Column
    * @returns {string}
    */
   this.select = function (value){
@@ -297,8 +371,8 @@ moback.queryMgr = function (table) {
 
   /**
    * Only return the rows with the values in column
-   * @param key
-   * @param value
+   * @param {String} key Key column of the table
+   * @param {Array} value Array of values to test against
    * @returns {string}
    */
   this.containedIn = function (key, value){
@@ -314,8 +388,8 @@ moback.queryMgr = function (table) {
 
   /**
    * Only return the rows with the values not contained in column
-   * @param key
-   * @param value
+   * @param {String} key Key column of the table
+   * @param {Array} value Array of values to test against
    * @returns {string}
    */
   this.notContainedIn = function (key, value){
@@ -332,8 +406,8 @@ moback.queryMgr = function (table) {
   /**
    * Only return the rows with the array contained in column
    * Only do this for column with array type
-   * @param key
-   * @param array
+   * @param {String} key Key column of the table
+   * @param {Array} value Array of values to test against
    * @returns {string}
    */
   this.containsAll = function (key, array){
@@ -348,7 +422,8 @@ moback.queryMgr = function (table) {
   };
 
   /**
-   *    Drops the table associated with the query object
+   * Drops the table associated with the query object
+   * @param {Function} callback
    */
   this.dropTable = function(callback) {
       if (rowTable){
