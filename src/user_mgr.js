@@ -4,6 +4,12 @@
 moback.userMgr = function () {
   var userObjectId = false;
   var sessionToken = false;
+  var data = {};
+
+  this.set = function(key, value){
+      data[key] = value;
+      return "Property is set";
+  };
 
   /**
    * creates a moback user
@@ -11,7 +17,7 @@ moback.userMgr = function () {
    * e.g. {"userId":"user1", "password":"xxxx", "email":"xxx@xxx.com", "firstname":"Uday", "lastname":"nayak" }
    * @param callback to run, with success message being returned.
    */
-  this.createUser = function (userObj, callback) {
+  this.createUser = function (callback) {
     var url = baseUrl + "objectmgr/api/collections/__appUsers";
     var headers = {
       'X-Moback-Environment-Key': envKey,
@@ -22,7 +28,7 @@ moback.userMgr = function () {
         userObjectId = res.objectId;
       }
       callback(res);
-    }, headers, userObj);
+    }, headers, data);
   };
 
   /**
@@ -111,7 +117,7 @@ moback.userMgr = function () {
    * @param updateObject
    * @param callback
    */
-  this.updateUser = function (updateObject, callback) {
+  this.updateUser = function (callback) {
     if (userObjectId){
       var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
       var headers = {
@@ -120,7 +126,7 @@ moback.userMgr = function () {
       };
       microAjax('PUT', url, function (res) {
         callback(res);
-      }, headers, updateObject);
+      }, headers, data);
     } else {
       callback("User object id is not set, please login or create user first");
     }

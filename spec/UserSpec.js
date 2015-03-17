@@ -6,55 +6,37 @@ describe("Moback User Manager Complete Test", function(){
   var mobackUser;
   var userData = {};
   var timestamp = new Date().getTime();
-  var userObj = {
-    "userId":"user" + timestamp,
-    "password":"asdf1234",
-    "email":"mike" + timestamp + "@gmail.com",
-    "firstname":"Uday",
-    "lastname":"nayak"
-  };
-  var updObj = {
-    firstname:"Mike",
-    password:"jasmine"
-  };
-
 
     /**
      * Test Instantiation of User Manager
      */
 
-    it("should be able to instantiate a moback user", function () {
-        var mobackTestUser = new Moback.userMgr();
-        expect(typeof mobackTestUser.createUser).toBe("function");
+    it("should be able to instantiate a moback user", function (done) {
+        mobackUser = new Moback.userMgr();
+        expect(typeof mobackUser.createUser).toBe("function");
+        done();
+    });
+
+    /**
+     * Test setting properties of the user
+     */
+    it("should set properties of the user", function(done){
+        mobackUser.set("userId", "john");
+        mobackUser.set("password", "mypassword");
+        mobackUser.set("email", "john@gmail.com");
+        mobackUser.set("firstname", "John");
+        mobackUser.set("lastname","Doe");
+        done();
     });
 
     /**
      * Test user creation
      */
     it("should create a user", function (done) {
-        mobackUser = new Moback.userMgr();
-        mobackUser.createUser(userObj, function (data) {
-            for (var prop in data) {
-                userData[prop] = data[prop];
-            }
+        mobackUser.createUser(function (data) {
             expect(data.objectId).toBeTruthy();
             done();
         })
-    });
-
-    /**
-     * Test user login
-     */
-
-    it("should login the created user", function (done) {
-        mobackUser.login(userObj.userId, userObj.password, function (data) {
-            for (var prop in data) {
-                userData[prop] = data[prop];
-            }
-            console.log(data);
-            expect(userData.ssotoken).toBeDefined();
-            done();
-        });
     });
 
     /**
@@ -63,15 +45,28 @@ describe("Moback User Manager Complete Test", function(){
 
     it("should get details of the user logged in", function (done) {
         mobackUser.getUserDetails(function (data) {
-            for (var prop in data) {
-                userData[prop] = data[prop];
-            }
+             for (var prop in data) {
+                   userData[prop] = data[prop];
+             }
             console.log(data);
             expect(userData.objectId).toEqual(data.objectId);
             expect(userData.email).toEqual(data.email);
             done();
         });
     });
+
+    /**
+     * Test user login
+     */
+    it("should login the created user", function (done) {
+        mobackUser.login(userData.userId, userData.password, function (data) {
+            console.log(data);
+            expect(data.ssotoken).toBeDefined();
+            done();
+        });
+    });
+
+
 
     it("should get session of the user logged in",function(){
       expect(mobackUser.getSessionToken()).toBeTruthy();
@@ -89,17 +84,25 @@ describe("Moback User Manager Complete Test", function(){
         })
     });
 
+    it("should set the property that needs to be updated", function(done){
+        mobackUser.set("lastname", "Mayer");
+        mobackUser.set("password", "password");
+        userData["lastname"] = "Mayer";
+        userData["password"] = "password";
+        done();
+    });
+
     /**
      * Test update user
      */
     it("should update the details of the user logged in", function (done) {
-        mobackUser.updateUser(updObj, function (data) {
+        mobackUser.updateUser(function (data) {
             console.log(data);
             expect(data.updatedAt).toBeDefined();
             it("Should match details of the user when fecthed", function (done) {
                 mobackUser.getUserDetails(function (data) {
-                    expect(data.firstname).toEqual(updObj.firstname);
-                    expect(data.password).toEqual(updObj.password);
+                    expect(data.firstname).toEqual(userData.firstname);
+                    expect(data.password).toEqual(userData.password);
                     done();
                 });
             });
@@ -111,6 +114,7 @@ describe("Moback User Manager Complete Test", function(){
     /**
      * Test User Logout
      */
+
     it("should log out the user", function (done) {
         expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
         it("should not return user details when logged out", function (done) {
@@ -122,7 +126,7 @@ describe("Moback User Manager Complete Test", function(){
 
 
     it("should be able to login after logout", function (done) {
-        mobackUser.login(userObj.userId, userObj.password, function (data) {
+        mobackUser.login(userData.userId, userData.password, function (data) {
             for (var prop in data) {
                 userData[prop] = data[prop];
             }
@@ -149,18 +153,19 @@ describe("Moback User Manager Complete Test", function(){
 
 
 
-        /**
-         * Test sending invites
-         */
 
-        /*  it("Should send invites", function(done){
-         mobackUser.sendInvite("sunainap@moback.com", userData.ssotoken, function(data){
-         console.log(userData.ssotoken);
-         done();
-         })
-         });*/
+    /**
+     * Test sending invites
+     */
 
-    });
+ /*  it("Should send invites", function(done){
+     mobackUser.sendInvite("sunainap@moback.com", userData.ssotoken, function(data){
+     console.log(userData.ssotoken);
+     done();
+     })
+     });*/
+
+  });
 
 });
 
