@@ -70,8 +70,9 @@ moback.userMgr = function () {
    * @returns {string}
    */
   this.logout = function(){
-    userObjectId = false;
-    return "User has been successfully logged out."
+     sessionToken = false;
+     data = {};
+     return "User has been successfully logged out."
   };
 
   /**
@@ -79,7 +80,7 @@ moback.userMgr = function () {
    * @param {Function} callback
    */
   this.getUserDetails = function (callback) {
-    if (userObjectId){
+   if(sessionToken){
       //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
       var url = baseUrl + "usermanager/api/users/user";
       var headers = {
@@ -94,10 +95,10 @@ moback.userMgr = function () {
           callback(res);
         }
       }, headers);
-    } else {
-      callback("User object id is not set, please login or create user first");
+   } else {
+      callback("User session token is not set, please login or create user first");
     }
-  };
+   };
 
   /**
    * Sends the user a reset password email, for them to reset their passwords
@@ -122,7 +123,7 @@ moback.userMgr = function () {
    * @param {Function} callback
    */
   this.updateUser = function (callback) {
-    if (userObjectId){
+    if (sessionToken){
       //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
       var url = baseUrl + "usermanager/api/users/user";
       var headers = {
@@ -134,7 +135,7 @@ moback.userMgr = function () {
         callback(res);
       }, headers, data);
     } else {
-      callback("User object id is not set, please login or create user first");
+      callback("User session token is not set, please login the user first");
     }
   };
 
@@ -177,7 +178,7 @@ moback.userMgr = function () {
         callback(res);
       }, headers, postdata);
     } else {
-      callback("User object id is not set, please login or create user first");
+      callback("User object id is not set, please login the user first");
     }
   };
 
