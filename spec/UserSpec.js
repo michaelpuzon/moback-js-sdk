@@ -2,10 +2,21 @@
  * Test the user manager
  */
 
-describe("Moback User Manager Complete Test", function(){
+describe("Moback User Manager", function(){
   var mobackUser;
   var userData = {};
   var timestamp = new Date().getTime();
+  var userObj = {
+    "userId":"user" + timestamp,
+    "password":"asdf1234",
+    "email":"mike" + timestamp + "@gmail.com",
+    "firstname":"Uday",
+    "lastname":"nayak"
+  };
+  var updObj = {
+    firstname:"Mike",
+    password:"jasmine"
+  };
 
     /**
      * Test Instantiation of User Manager
@@ -66,8 +77,6 @@ describe("Moback User Manager Complete Test", function(){
         });
     });
 
-
-
     it("should get session of the user logged in",function(){
       expect(mobackUser.getSessionToken()).toBeTruthy();
     });
@@ -96,13 +105,13 @@ describe("Moback User Manager Complete Test", function(){
      * Test update user
      */
     it("should update the details of the user logged in", function (done) {
-        mobackUser.updateUser(function (data) {
+        mobackUser.updateUser(updObj, function (data) {
             console.log(data);
             expect(data.updatedAt).toBeDefined();
             it("Should match details of the user when fecthed", function (done) {
                 mobackUser.getUserDetails(function (data) {
-                    expect(data.firstname).toEqual(userData.firstname);
-                    expect(data.password).toEqual(userData.password);
+                    expect(data.firstname).toEqual(updObj.firstname);
+                    expect(data.password).toEqual(updObj.password);
                     done();
                 });
             });

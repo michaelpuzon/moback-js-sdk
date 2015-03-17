@@ -1,13 +1,14 @@
 /**
  * File manager allows a file to be saved in the cloud, and be subquently used in moback objects.
- * @param fileName - filename to be used for the file
- * @param fileData - the actual file data
+ * @param {String} fileName Filename to be used for the file
+ * @param {File} fileData The actual file data
  */
 moback.fileMgr = function (fileData, fileName) {
   var fileUrl = false;
+
   /**
-   * Creates an object in the table specified in the
-   * @param callback
+   * Saves the file, using the session token provided by logged in user
+   * @param {Function} callback
    */
   this.save = function (sessionToken, callback) {
     var formData = new FormData();
@@ -35,7 +36,7 @@ moback.fileMgr = function (fileData, fileName) {
 
   /**
    * Returns the name of the file
-   * @returns {Name of the file}
+   * @returns {String} Name of the file
    */
   this.getName = function(){
       if(fileName){
@@ -48,7 +49,7 @@ moback.fileMgr = function (fileData, fileName) {
 
   /**
    * Returns the URL of the file
-   * @returns {URL of the file}
+   * @returns {String} URL of the file
    */
   this.getUrl = function() {
       if(fileUrl){
@@ -60,9 +61,9 @@ moback.fileMgr = function (fileData, fileName) {
   };
 
   /**
-   * Deletes a file uploaded by the user
-   * @param sessionToken
-   * @param callback
+   * Deletes the file uploaded by the user
+   * @param {String} sessionToken
+   * @param {Function} callback
    */
   this.removeFile = function(sessionToken, callback) {
       //check file

@@ -17,8 +17,8 @@ module.exports = function(grunt) {
         footer: "}(window));"
       },
       dist: {
-        src: ['src/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
-          'src/notification_mgr.js', 'src/file_mgr.js', 'src/ajax.js', 'src/moback_end.js'],
+        src: ['src/helper/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
+          'src/notification_mgr.js', 'src/file_mgr.js', 'src/helper/ajax.js', 'src/helper/moback_end.js'],
         dest: 'dist/moback.js'
       }
     },
@@ -27,7 +27,8 @@ module.exports = function(grunt) {
         src: 'src',
         target: 'generated-docs',
         options: {
-          title: 'Moback Javascript SDK Documentation'
+          title: 'Moback Javascript SDK Documentation',
+          ignore: 'helper'
         }
       }
     },
@@ -61,8 +62,14 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      files: ['src/*.js'],
-      tasks: ['clean:dev', 'concat']
+      js: {
+        files: ['src/*.js'],
+        tasks: ['clean:dev', 'concat']
+      },
+      docs: {
+        files: ['src/*.js'],
+        tasks: ['clean:build', 'concat', 'doxx']
+      }
     }
   });
 
@@ -94,5 +101,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['clean:build', 'concat', 'uglify', 'doxx']);
 
-  grunt.registerTask('serve', ['connect:server', 'watch']);
+  grunt.registerTask('serve', ['connect:server', 'watch:js']);
 };

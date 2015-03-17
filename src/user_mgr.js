@@ -13,12 +13,13 @@ moback.userMgr = function () {
 
   /**
    * creates a moback user
-   * @param userObj has to have some required fields(userId, email, password)
+   * @param {Object} userObj has to have some required fields(userId, email, password)
    * e.g. {"userId":"user1", "password":"xxxx", "email":"xxx@xxx.com", "firstname":"Uday", "lastname":"nayak" }
-   * @param callback to run, with success message being returned.
+   * @param {Function} callback Will output either success or failed message.
    */
   this.createUser = function (callback) {
-    var url = baseUrl + "objectmgr/api/collections/__appUsers";
+    //var url = baseUrl + "objectmgr/api/collections/__appUsers";
+    var url = baseUrl + "usermanager/api/users/signup";
     var headers = {
       'X-Moback-Environment-Key': envKey,
       'X-Moback-Application-Key': appKey
@@ -33,9 +34,9 @@ moback.userMgr = function () {
 
   /**
    * Login a moback user.
-   * @param username - required
-   * @param password - required
-   * @param callback
+   * @param {String} username UserId of user required
+   * @param {String} password Password of user required
+   * @param {Function} callback
    */
   this.login = function (username, password, callback) {
     var url = baseUrl + "usermanager/api/users/login";
@@ -55,15 +56,13 @@ moback.userMgr = function () {
 
   /**
    * Returns the session token if the user is logged in else returns false
-   * @returns sessionToken or a string
+   * @returns {String} sessionToken or false
    */
   this.getSessionToken = function(){
       if(sessionToken) {
           return sessionToken;
       }
-      else {
-          return "User is not logged in";
-      }
+      return false;
   };
 
   /**
@@ -77,17 +76,23 @@ moback.userMgr = function () {
 
   /**
    * Returns all information about a user
-   * @param callback
+   * @param {Function} callback
    */
   this.getUserDetails = function (callback) {
     if (userObjectId){
-      var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      var url = baseUrl + "usermanager/api/users/user";
       var headers = {
         'X-Moback-Environment-Key': envKey,
-        'X-Moback-Application-Key': appKey
+        'X-Moback-Application-Key': appKey,
+        'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('GET', url, function (res) {
-        callback(res);
+        if(res.code && res.code == '1000'){
+          callback(res.user);
+        } else {
+          callback(res);
+        }
       }, headers);
     } else {
       callback("User object id is not set, please login or create user first");
@@ -96,8 +101,8 @@ moback.userMgr = function () {
 
   /**
    * Sends the user a reset password email, for them to reset their passwords
-   * @param emailId - required field
-   * @param callback
+   * @param {String} emailId email address of the user required field
+   * @param {Function} callback
    */
   this.resetPassword = function (emailId, callback) {
     var url = baseUrl + "usermanager/api/users/password/reset";
@@ -114,15 +119,16 @@ moback.userMgr = function () {
 
   /**
    * Update user information. Expects an update Objects, which will be similar to object used for registration.
-   * @param updateObject
-   * @param callback
+   * @param {Function} callback
    */
   this.updateUser = function (callback) {
     if (userObjectId){
-      var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+      var url = baseUrl + "usermanager/api/users/user";
       var headers = {
         'X-Moback-Environment-Key': envKey,
-        'X-Moback-Application-Key': appKey
+        'X-Moback-Application-Key': appKey,
+        'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('PUT', url, function (res) {
         callback(res);
@@ -135,8 +141,8 @@ moback.userMgr = function () {
 
   /**
    * Removes the object from the table, cloud
-   * @param callback
-   * @returns {string}
+   * @param {Function} callback
+   * @returns {string} success confirmation that the user has been delete
    */
   this.deleteUser = function(callback) {
     if(userObjectId){
@@ -155,21 +161,24 @@ moback.userMgr = function () {
 
   /**
    * Sends the user an invitation email, to use the app.
-   * @param inviteeId
-   * @param sessionTokenKey
-   * @param callback
+   * @param {String} inviteeId Email address of user invited
+   * @param {Function} callback
    */
-  this.sendInvite = function (inviteeId, sessionTokenKey, callback) {
-    var url = baseUrl + "usermanager/api/users/invitation";
-    var postdata = {"inviteeID": inviteeId};
-    var headers = {
-      'X-Moback-Environment-Key': envKey,
-      'X-Moback-Application-Key': appKey,
-      'X-Moback-SessionToken-Key': sessionTokenKey
-    };
-    microAjax('POST', url, function (res) {
-      callback(res);
-    }, headers, postdata);
+  this.sendInvite = function (inviteeId, callback) {
+    if (userObjectId){
+      var url = baseUrl + "usermanager/api/users/invitation";
+      var postdata = {"inviteeID": inviteeId};
+      var headers = {
+        'X-Moback-Environment-Key': envKey,
+        'X-Moback-Application-Key': appKey,
+        'X-Moback-SessionToken-Key': sessionToken
+      };
+      microAjax('POST', url, function (res) {
+        callback(res);
+      }, headers, postdata);
+    } else {
+      callback("User object id is not set, please login or create user first");
+    }
   };
 
 };
