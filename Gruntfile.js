@@ -61,6 +61,18 @@ module.exports = function(grunt) {
         dest: 'dist/moback.js'
       }
     },
+    markdown: {
+      all: {
+        files: [
+          {
+            expand: true,
+            src: 'docs/src/*.md',
+            dest: 'docs/html/',
+            ext: '.html'
+          }
+        ]
+      }
+    },
     watch: {
       js: {
         files: ['src/*.js'],
@@ -79,6 +91,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-doxx');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-markdown');
   //grunt.loadNpmTasks('grunt-connect');
 
 
