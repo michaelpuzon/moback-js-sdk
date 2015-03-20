@@ -28,7 +28,16 @@ module.exports = function(grunt) {
         target: 'generated-docs',
         options: {
           title: 'Moback Javascript SDK Documentation',
-          ignore: 'helper'
+          ignore: 'helper',
+          template: 'lib/doxx.jade'
+        }
+      }
+    },
+    jsdoc: {
+      dist: {
+        src: 'src/*.js',
+        options: {
+          destination: 'generated-docs'
         }
       }
     },
@@ -92,6 +101,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-markdown');
+  grunt.loadNpmTasks('grunt-jsdoc');
   //grunt.loadNpmTasks('grunt-connect');
 
 
