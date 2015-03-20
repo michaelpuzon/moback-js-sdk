@@ -35,7 +35,6 @@ moback.userMgr = function () {
    * @param {Function} callback Will output either success or failed message.
    */
   this.createUser = function (callback) {
-    //var url = baseUrl + "objectmgr/api/collections/__appUsers";
     var url = baseUrl + "usermanager/api/users/signup";
     var headers = {
       'X-Moback-Environment-Key': envKey,
@@ -98,7 +97,6 @@ moback.userMgr = function () {
    */
   this.getUserDetails = function (callback) {
    if(sessionToken){
-      //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
       var url = baseUrl + "usermanager/api/users/user";
       var headers = {
         'X-Moback-Environment-Key': envKey,
@@ -141,7 +139,6 @@ moback.userMgr = function () {
    */
   this.updateUser = function (callback) {
     if (sessionToken){
-      //var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
       var url = baseUrl + "usermanager/api/users/user";
       var headers = {
         'X-Moback-Environment-Key': envKey,
@@ -163,11 +160,12 @@ moback.userMgr = function () {
    * @returns {string} success confirmation that the user has been delete
    */
   this.deleteUser = function(callback) {
-    if(userObjectId){
-      var url = baseUrl + "objectmgr/api/collections/__appUsers/" + userObjectId;
+    if(sessionToken){
+      var url = baseUrl + "usermanager/api/users/user";
       var headers = {
           'X-Moback-Environment-Key': envKey,
-          'X-Moback-Application-Key': appKey
+          'X-Moback-Application-Key': appKey,
+          'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('DELETE', url, function (res) {
           callback(res);
