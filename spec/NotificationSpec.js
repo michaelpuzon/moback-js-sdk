@@ -67,7 +67,7 @@ describe("Moback Notification Manager", function() {
   it("should delete the create user sent with notification", function (done) {
     mobackUser.deleteUser(function (data) {
       console.log(data);
-      expect(data.hasOwnProperty("success")).toBeTruthy();
+      expect(data.code).toBe("1000");
       done();
     });
   });

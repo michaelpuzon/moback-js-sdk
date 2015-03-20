@@ -151,8 +151,7 @@ describe("Moback User Manager", function(){
 
     it("should delete a user", function (done) {
         mobackUser.deleteUser(function (data) {
-            console.log(data);
-            expect(data.hasOwnProperty("success")).toBeTruthy();
+            expect(data.code).toBe("1000");
             done();
         });
     });
