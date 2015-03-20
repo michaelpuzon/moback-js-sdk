@@ -6,11 +6,22 @@ moback.userMgr = function () {
   var sessionToken = false;
   var data = {};
 
+  /**
+   * Set a parameter value for a user
+   * @param {String} key Please set this 3 required parameters(userId, email, password), and add any additional ones
+   * @param {String} value The value to set the parameter to
+   * @returns {string}
+   */
   this.set = function(key, value){
       data[key] = value;
       return "Property is set";
   };
 
+  /**
+   * Gets the current parameter value for a user
+   * @param {String} key Paramter you are fetching
+   * @returns {string} returns string or false
+   */
   this.get = function(key){
     if(data[key]) {
       return data[key];
@@ -20,8 +31,7 @@ moback.userMgr = function () {
 
   /**
    * creates a moback user
-   * @param {Object} userObj has to have some required fields(userId, email, password)
-   * e.g. {"userId":"user1", "password":"xxxx", "email":"xxx@xxx.com", "firstname":"Uday", "lastname":"nayak" }
+   * userObj has to have some required fields(userId, email, password) before calling createUser method
    * @param {Function} callback Will output either success or failed message.
    */
   this.createUser = function (callback) {
