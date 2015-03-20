@@ -154,7 +154,7 @@ describe("Moback User Manager", function(){
         });
     });
 
-/*    it("should not get user details for the deleted user", function (done) {
+/*  it("should not get user details for the deleted user", function (done) {
         expect(mobackUser.getUserDetails()).toEqual("User session token is not set, please login the user first");
         done();
     });*/
@@ -169,8 +169,6 @@ describe("Moback User Manager", function(){
      done();
      })
      });*/
-
-
 
 });
 

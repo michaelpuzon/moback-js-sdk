@@ -184,7 +184,6 @@ moback.objMgr = function (table) {
           relationAddItem.name = name;
           addRelationArray.push(relationAddItem);
         }
-        //console.log(addRelationArray);
       }
       if(removeRelationArray.length > 0){
         removePointers(removeRelationArray, callback);
@@ -229,9 +228,6 @@ moback.objMgr = function (table) {
     for(var key in data){
       postData[key] = data[key];
     }
-
-    //console.log(postData);
-    //return;
 
     saveAPI(postData, callback);
   };

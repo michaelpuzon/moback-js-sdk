@@ -70,10 +70,19 @@ Update User
 -----------
 
 At any time, a user is free to update user information as long as the user is logged in. For example, if a
-user would like to update the last name and password:
+user would like to update the last name:
 
           mobackUser.set("lastname", "Mayer");
-          mobackUser.set("password", "password");
-          mobackUser.updateUser(updateObj, function(data{
+          mobackUser.updateUser(function(data{
+                console.log(data);
+          });
+
+
+Delete User
+-----------
+
+Moback.userMgr provides a method deleteUser provides to delete a user.
+
+          mobackUser.deleteUser(function (data) {
                 console.log(data);
           });
