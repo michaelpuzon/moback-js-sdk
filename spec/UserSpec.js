@@ -21,13 +21,15 @@ describe("Moback User Manager", function(){
      * Test setting properties of the user
      */
     it("should set properties of the user", function(done){
-        mobackUser.set("userId", "john");
-        userData["userId"] = "john";
+        mobackUser.set("userId", "john" + timestamp);
+        userData["userId"] = "john" + timestamp;
         mobackUser.set("password", "mypassword");
         userData["password"] = "mypassword";
-        mobackUser.set("email", "john@example.com");
-        userData["email"] = "john@example.com";
+        mobackUser.set("email", "john" + timestamp + "@example.com");
+        expect(mobackUser.get("email")).toBe("john" + timestamp + "@example.com");
+        userData["email"] = "john" + timestamp + "@example.com";
         mobackUser.set("firstname", "John");
+        expect(mobackUser.get("firstname")).toBe("John");
         userData["firstname"] = "John";
         mobackUser.set("lastname","Doe");
         userData["lastname"] = "Doe";
@@ -103,6 +105,7 @@ describe("Moback User Manager", function(){
     it("should set the property that needs to be updated", function(done){
         mobackUser.set("lastname", "Mayer");
         userData["lastname"] = "Mayer";
+        expect(mobackUser.get("lastname")).toBe("Mayer");
         done();
     });
 

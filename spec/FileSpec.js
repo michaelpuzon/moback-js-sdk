@@ -28,7 +28,10 @@ describe("Moback File Manager", function() {
        */
       it("should create a user",function(done){
         mobackUser = new Moback.userMgr();
-        mobackUser.createUser(userObj,function(data){
+        for(var key in userObj){
+          mobackUser.set(key, userObj[key]);
+        }
+        mobackUser.createUser(function(data){
           for(var prop in data) {
             userData[prop] = data[prop];
           }
