@@ -5,6 +5,7 @@ moback.userMgr = function () {
   var userObjectId = false;
   var sessionToken = false;
   var data = {};
+  var self = this;
 
   /**
    * Set a parameter value for a user
@@ -71,6 +72,39 @@ moback.userMgr = function () {
   };
 
   /**
+   * Logs in a moback user with a given session token.
+   * @param {String} userSessionToken saved session token of the user
+   * @param {Function} callback
+   */
+  this.loginWithSessionToken = function (userSessionToken, callback) {
+    sessionToken = userSessionToken;
+    var url = baseUrl + "usermanager/api/users/user";
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey,
+      'X-Moback-SessionToken-Key': sessionToken
+    };
+    microAjax('GET', url, function (res) {
+      if(res.responseObject.code && res.responseObject.code == '1000'){
+        var user = res.user;
+        for (var prop in user) {
+          if(prop == "createdAt" || prop == "updatedAt"){
+            self[prop] = user[prop];
+          } else if(prop == "objectId"){
+            userObjectId = user[prop];
+          } else {
+            data[prop] = user[prop];
+          }
+        }
+        callback(res.user);
+      } else {
+        callback(res);
+      }
+    }, headers);
+
+  };
+
+  /**
    * Returns the session token if the user is logged in else returns false
    * @returns {String} sessionToken or false
    */
@@ -86,9 +120,10 @@ moback.userMgr = function () {
    * @returns {string}
    */
   this.logout = function(){
-     sessionToken = false;
-     data = {};
-     return "User has been successfully logged out."
+    sessionToken = false;
+    userObjectId = false;
+    data = {};
+    return "User has been successfully logged out."
   };
 
   /**
@@ -104,7 +139,17 @@ moback.userMgr = function () {
         'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('GET', url, function (res) {
-        if(res.code && res.code == '1000'){
+        if(res.responseObject.code && res.responseObject.code == '1000'){
+          var user = res.user;
+          for (var prop in user) {
+            if(prop == "createdAt" || prop == "updatedAt"){
+              self[prop] = user[prop];
+            } else if(prop == "objectId"){
+              userObjectId = user[prop];
+            } else {
+              data[prop] = user[prop];
+            }
+          }
           callback(res.user);
         } else {
           callback(res);

@@ -5,6 +5,7 @@
 describe("Moback User Manager", function(){
   var mobackUser;
   var userData = {};
+  var sessionToken = "";
   var timestamp = new Date().getTime();
 
     /**
@@ -71,22 +72,25 @@ describe("Moback User Manager", function(){
     });
 
     it("should get session of the user logged in",function(){
-        expect(mobackUser.getSessionToken()).toBeTruthy();
+      sessionToken = mobackUser.getSessionToken();
+      expect(mobackUser.getSessionToken()).toBeTruthy();
     });
 
     /**
      *  Test get user details
      */
 
-    it("should get details of the user logged in", function (done) {
+    it("should get details of the user logged in after re logging in", function (done) {
+      expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
+
+      mobackUser.login(userData['userId'], userData['password'], function (data) {
         mobackUser.getUserDetails(function (data) {
-             for (var prop in data) {
-                   userData[prop] = data[prop];
-             }
-            console.log(data);
-            expect(userData["userId"]).toEqual(data.user.userId);
-            done();
+          console.log(data);
+          expect(userData["userId"]).toEqual(mobackUser.get('userId'));
+          done();
         });
+
+      });
     });
 
 
@@ -94,7 +98,7 @@ describe("Moback User Manager", function(){
      *  Test reset password
      */
 
-    it("should send the user an email to reset password", function (done) {
+    xit("should send the user an email to reset password", function (done) {
         mobackUser.resetPassword(userData.email, function (data) {
             console.log(data);
             expect(data.message).toEqual("resetPassword Operation Successful");
@@ -120,25 +124,22 @@ describe("Moback User Manager", function(){
         })
     });
 
-    it("should get details of the user logged in", function (done) {
-        mobackUser.getUserDetails(function (data) {
-            for (var prop in data) {
-                userData[prop] = data[prop];
-            }
-            console.log(data);
-            expect(userData["lastname"]).toEqual(data.user.lastname);
-            done();
-        });
-    });
+    it("should login with valid sessionToken", function (done) {
+      expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
 
+      mobackUser.loginWithSessionToken(sessionToken, function (data) {
+        //console.log(data);
+        expect(userData["lastname"]).toEqual(mobackUser.get('lastname'));
+        done();
+      });
+    });
 
     /**
      * Test User Logout
      */
 
-   it("should log out the user", function (done) {
+   it("should log out the user", function () {
         expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
-        done();
    });
 
    it("should be able to login after logout", function (done) {
