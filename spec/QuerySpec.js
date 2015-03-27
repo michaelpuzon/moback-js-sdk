@@ -497,7 +497,8 @@ describe("Moback Query Manager", function() {
            console.log(data);
            var check = data.length;
            for(var z=0; z < check; z++) {
-               expect((data[z].get("Lead")).toEqual("Benedict Cumberbatch")) || ((data[z].get("Genre")).toEqual("Thriller"));
+               expect(data[z].get("Lead")).toEqual("Benedict Cumberbatch") ||
+               expect(data[z].get("Genre")).toEqual("Thriller");
            }
            done();
      })

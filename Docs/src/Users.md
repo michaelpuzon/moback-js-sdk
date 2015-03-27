@@ -53,9 +53,9 @@ To login a user after creating the user, you can use the login method.
 Fetch User Information
 ----------------------
 
-To fetch the details of the logged in user, the class method getUserDetails can be used.
+To fetch the details of the logged in user, just reuse fetch method from obj mgr can be used.
 
-          mobackUser.getUserDetails(function(data) {
+          mobackUser.fetch(function(data) {
                 console.log(data);
           });
 
@@ -88,7 +88,7 @@ At any time, a user is free to update user information as long as the user is lo
 user would like to update the last name:
 
           mobackUser.set("lastname", "Mayer");
-          mobackUser.updateUser(function(data{
+          mobackUser.save(function(data{
                 console.log(data);
           });
 
