@@ -238,14 +238,18 @@ moback.objMgr = function (table) {
    * @param {Function} callback
    */
   function saveAPI(postData, callback){
-    console.log(callback);
+    //console.log(callback);
     var headers = {
       'X-Moback-Environment-Key': envKey,
       'X-Moback-Application-Key': appKey
     };
 
     if(!rowObjectId) {
-      var url = baseUrl + "objectmgr/api/collections/" + table;
+      if(typeof self.createUser === "function"){
+        var url = baseUrl + "usermanager/api/users/signup";
+      } else {
+        var url = baseUrl + "objectmgr/api/collections/" + table;
+      }
       microAjax('POST', url, function (res) {
         if(res.objectId){
           rowObjectId = res.objectId;

@@ -1,7 +1,11 @@
 Users
 =====
-User accounts lets users access their information ina secure manner. For this, we provide a special
+User accounts lets users access their information in a secure manner. For this, we provide a special
 class called Moback.usrMgr.
+
+Moback.usrMgr is a subclass of Moback.objMgr. This enables to use "get", "set", "save", "fetch", and 
+all other methods and properties that Moback.objMgr provides.
+
 This class handles all the functionality needed for user account management.
 
 Properties
@@ -52,6 +56,17 @@ Fetch User Information
 To fetch the details of the logged in user, the class method getUserDetails can be used.
 
           mobackUser.getUserDetails(function(data) {
+                console.log(data);
+          });
+
+Log In a User with a Session Token
+------
+
+To re-login a user using a session token, you can use the loginWithSessionToken method.
+
+          var sessionToken = mobackUser.getSessionToken(); //save this for use later
+          
+          mobackUser.loginWithSessionToken(sessionToken, function(data){
                 console.log(data);
           });
 

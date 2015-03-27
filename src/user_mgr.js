@@ -2,33 +2,11 @@
  * Moback User Mgr allows you to create users, have them login later, retrieve user details.
  */
 moback.userMgr = function () {
-  var userObjectId = false;
+  moback.objMgr.call(this, "__appUsers"); //inherit the moback obj mgr
+  //var userObjectId = false;
+  //var data = {};
   var sessionToken = false;
-  var data = {};
   var self = this;
-
-  /**
-   * Set a parameter value for a user
-   * @param {String} key Please set this 3 required parameters(userId, email, password), and add any additional ones
-   * @param {String} value The value to set the parameter to
-   * @returns {string}
-   */
-  this.set = function(key, value){
-      data[key] = value;
-      return "Property is set";
-  };
-
-  /**
-   * Gets the current parameter value for a user
-   * @param {String} key Paramter you are fetching
-   * @returns {string} returns string or false
-   */
-  this.get = function(key){
-    if(data[key]) {
-      return data[key];
-    }
-    return false;
-  };
 
   /**
    * creates a moback user
@@ -36,17 +14,17 @@ moback.userMgr = function () {
    * @param {Function} callback Will output either success or failed message.
    */
   this.createUser = function (callback) {
-    var url = baseUrl + "usermanager/api/users/signup";
-    var headers = {
-      'X-Moback-Environment-Key': envKey,
-      'X-Moback-Application-Key': appKey
-    };
-    microAjax('POST', url, function (res) {
-      if(res.objectId){
-        userObjectId = res.objectId;
-      }
-      callback(res);
-    }, headers, data);
+    if(self.get("userId") == "Property does not exist" || self.get("email") == "Property does not exist" ||
+      self.get("password") == "Property does not exist"){
+      callback("userId, email, and password not set");
+      return;
+    }
+
+    if(self.id){
+      callback("User already created");
+    } else {
+      self.save(callback);
+    }
   };
 
   /**
@@ -64,7 +42,7 @@ moback.userMgr = function () {
     };
     microAjax('POST', url, function (res) {
       if(res.response.objectId && res.ssotoken){
-        userObjectId = res.response.objectId;
+        self.id = res.response.objectId;
         sessionToken = res.ssotoken;
       }
       callback(res);
@@ -91,9 +69,9 @@ moback.userMgr = function () {
           if(prop == "createdAt" || prop == "updatedAt"){
             self[prop] = user[prop];
           } else if(prop == "objectId"){
-            userObjectId = user[prop];
+            self.id = user[prop];
           } else {
-            data[prop] = user[prop];
+            self.set(prop,user[prop]);
           }
         }
         callback(res.user);
@@ -110,7 +88,7 @@ moback.userMgr = function () {
    */
   this.getSessionToken = function(){
       if(sessionToken) {
-          return sessionToken;
+        return sessionToken;
       }
       return false;
   };
@@ -121,8 +99,7 @@ moback.userMgr = function () {
    */
   this.logout = function(){
     sessionToken = false;
-    userObjectId = false;
-    data = {};
+    delete self.id;
     return "User has been successfully logged out."
   };
 
@@ -130,6 +107,7 @@ moback.userMgr = function () {
    * Returns all information about a user
    * @param {Function} callback
    */
+  /*
   this.getUserDetails = function (callback) {
    if(sessionToken){
       var url = baseUrl + "usermanager/api/users/user";
@@ -159,6 +137,7 @@ moback.userMgr = function () {
       callback("User session token is not set, please login or create user first");
     }
    };
+   */
 
   /**
    * Sends the user a reset password email, for them to reset their passwords
@@ -182,6 +161,7 @@ moback.userMgr = function () {
    * Update user information. Expects an update Objects, which will be similar to object used for registration.
    * @param {Function} callback
    */
+  /*
   this.updateUser = function (callback) {
     if (sessionToken){
       var url = baseUrl + "usermanager/api/users/user";
@@ -197,6 +177,7 @@ moback.userMgr = function () {
       callback("User session token is not set, please login the user first");
     }
   };
+  */
 
 
   /**

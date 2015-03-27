@@ -54,7 +54,7 @@ describe("Moback User Manager", function(){
     it("should not create user that already exists", function (done) {
         mobackUser.createUser(function (data) {
             console.log(data);
-            expect(data["code"]).toEqual('3011');
+            expect(data).toEqual('User already created');
             done();
         })
     });
@@ -80,7 +80,7 @@ describe("Moback User Manager", function(){
      *  Test get user details
      */
 
-    it("should get details of the user logged in after re logging in", function (done) {
+    xit("should get details of the user logged in after re logging in", function (done) {
       expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
 
       mobackUser.login(userData['userId'], userData['password'], function (data) {
@@ -117,9 +117,9 @@ describe("Moback User Manager", function(){
      * Test update user
      */
     it("should update the details of the user logged in", function (done) {
-        mobackUser.updateUser(function (data) {
+        mobackUser.save(function (data) {
             console.log(data);
-            expect(data["code"]).toEqual("1000");
+            expect(data["updatedAt"]).toBeDefined();
             done();
         })
     });
