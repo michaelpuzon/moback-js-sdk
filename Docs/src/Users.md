@@ -53,7 +53,7 @@ To login a user after creating the user, you can use the login method.
 Fetch User Information
 ----------------------
 
-To fetch the details of the logged in user, just reuse fetch method from obj mgr can be used.
+To fetch the details of the logged in user, just reuse fetch method from obj mgr.
 
           mobackUser.fetch(function(data) {
                 console.log(data);
