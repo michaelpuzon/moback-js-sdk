@@ -30,31 +30,8 @@ moback.queryMgr = function (table) {
    */
   this.fetch = function (callback) {
     if (rowTable){
-      var query = "?where=";
-      //if filters array is set, build the filters
-      if(filters.length > 0){
-        if(filters.length == 1){
-          query = query + encodeURIComponent(JSON.stringify(filters[0]));
-        } else {
-          var objQueries = {};
-          objQueries["$" + queryMode] = filters;
-          query = query + encodeURIComponent(JSON.stringify(objQueries));
-        }
-      }
-      if(limit){
-        query = query + "&limit=" + limit;
-      }
-      if(skip){
-        query = query + "&skip=" + skip;
-      }
-      if(order){
-        query = query + "&order=" + order;
-      }
-      if(keys){
-        query = query + "&keys=" + keys;
-      }
-
-      var url = baseUrlAPI + "collections/" + rowTable + query;
+      var query = formQuery();
+      var url = baseUrlAPI + "collections/" + rowTable + "?" + query;
       var headers = {
         'X-Moback-Environment-Key': envKey,
         'X-Moback-Application-Key': appKey
@@ -76,6 +53,40 @@ moback.queryMgr = function (table) {
       callback("Query object is not set, please set a query object first");
     }
   };
+
+  /**
+   * Internal function to form the filters query
+   */
+  function formQuery(){
+    var query = "where=";
+    //if filters array is set, build the filters
+    if(filters.length > 0){
+      if(filters.length == 1){
+        query = query + encodeURIComponent(JSON.stringify(filters[0]));
+      } else {
+        var objQueries = {};
+        objQueries["$" + queryMode] = filters;
+        query = query + encodeURIComponent(JSON.stringify(objQueries));
+      }
+    }
+    if(limit){
+      query = query + "&limit=" + limit;
+    }
+    if(skip){
+      query = query + "&skip=" + skip;
+    }
+    if(order){
+      query = query + "&order=" + order;
+    }
+    if(keys){
+      query = query + "&keys=" + keys;
+    }
+    if(query == "where=") {
+      return '';
+    } else {
+      return query;
+    }
+  }
 
   /**
    * Fetches a single moback object in the table
@@ -105,14 +116,19 @@ moback.queryMgr = function (table) {
    */
   this.getCount = function (callback) {
     if (rowTable){
-      var url = baseUrlAPI + "collections/" + rowTable;
+      var query = formQuery();
+      var url = baseUrlAPI + "collections/" + rowTable + "?op=count";
+      console.log("Query is:" + query);
+      if(query != ""){
+        url += "&" + query;
+      }
       var headers = {
         'X-Moback-Environment-Key': envKey,
         'X-Moback-Application-Key': appKey
       };
       microAjax('GET', url, function (res) {
-        if(res.results){
-          callback(res.results.length);
+        if(res.count){
+          callback(res.count);
         } else {
           callback(0);
         }
