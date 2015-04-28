@@ -118,7 +118,7 @@ moback.queryMgr = function (table) {
     if (rowTable){
       var query = formQuery();
       var url = baseUrlAPI + "collections/" + rowTable + "?op=count";
-      console.log("Query is:" + query);
+      //console.log("Query is:" + query);
       if(query != ""){
         url += "&" + query;
       }
@@ -239,6 +239,24 @@ moback.queryMgr = function (table) {
       newFilter[key] = {'$lte' : value};
       filters.push(newFilter);
       return ("Added filter: lte " + key + " : " + value);
+    } else {
+      return ("Key and value are required");
+    }
+  };
+
+  /**
+   * Set's a filter to the query so the key should be regex exp applied to key.
+   * Please use this filter on string only.
+   * @param {String} key Key column in the table
+   * @param {String} value Value that the column should match to
+   * @returns {string} success message
+   */
+  this.applyRegex = function (key, value){
+    if (key && value){
+      var newFilter = {};
+      newFilter[key] = {'$regex' : value};
+      filters.push(newFilter);
+      return ("Added filter: regex " + key + " : " + value);
     } else {
       return ("Key and value are required");
     }

@@ -12,6 +12,7 @@ describe("Moback Query Manager", function() {
   var mobackQuery, mobackQuerySecond;
   var timestamp = new Date().getTime();
   var objData = {};
+  var benedictItems = 0;
   var leads = ['Kevin Spacey', 'Brad Pitt', 'George Clooney', 'Benedict Cumberbatch', 'Johnny Depp'];
   var genre = ['Thriller', 'Horror', 'Comedy', 'Drama','Romance'];
   var movies = ['Gone Girl', 'The Imitation Game', 'Its a Wonderful Life', 'The Illusionist', 'Sherlock'];
@@ -132,6 +133,8 @@ describe("Moback Query Manager", function() {
           var check = data.length;
           if(check == 0) {
               expect(data.length).toEqual(0);
+          } else {
+            benedictItems = data.length;
           }
           for(var z=0; z < check; z++) {
               expect(data[z].get("Lead")).toEqual("Benedict Cumberbatch");
@@ -146,6 +149,17 @@ describe("Moback Query Manager", function() {
   it("should reset all the filter",function(done){
      expect(mobackQuery.resetFilters()).toEqual("filters reset");
      done();
+  });
+
+  /**
+   * Test regex filter
+   */
+  it("should apply a regex filter to return all leads with ending batch", function(done){
+    mobackQuery.applyRegex("Lead",".*batch");
+    mobackQuery.getCount(function(data){
+      expect(data).toEqual(benedictItems);
+      done();
+    })
   });
 
   /**
