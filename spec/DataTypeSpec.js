@@ -53,7 +53,7 @@ describe("Moback Data Type Manager", function() {
     expect(geoValue.lon).toBe(17);
   });
 
-  it("should update created date object" ,function(){
+  it("should update created geopoint object" ,function(){
     expect(typeof geoObj.setGeoPoint).toBe("function");
     geoObj.setGeoPoint( 20, 52 );
 
