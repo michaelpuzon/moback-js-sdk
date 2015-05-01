@@ -17,8 +17,9 @@ module.exports = function(grunt) {
         footer: "}(window));"
       },
       dist: {
-        src: ['src/helper/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/query_mgr.js',
-          'src/notification_mgr.js', 'src/file_mgr.js', 'src/helper/ajax.js', 'src/helper/moback_end.js'],
+        src: ['src/helper/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/datatypes_mgr.js',
+          'src/query_mgr.js', 'src/notification_mgr.js', 'src/file_mgr.js',
+          'src/helper/ajax.js', 'src/helper/moback_end.js'],
         dest: 'dist/moback.js'
       }
     },
@@ -84,7 +85,7 @@ module.exports = function(grunt) {
     },
     watch: {
       js: {
-        files: ['src/*.js'],
+        files: ['src/**.js'],
         tasks: ['clean:dev', 'concat']
       },
       docs: {

@@ -35,6 +35,22 @@ moback.fileMgr = function (fileData, fileName) {
   };
 
   /**
+   * Returns the object to be used for moback object mgr
+   * @returns {object} Name of the file
+   */
+  this.getValue = function(){
+    if(fileUrl){
+      var fileObj = { __type : "File" };
+      fileObj.name = fileName;
+      fileObj.url = fileUrl;
+      return fileObj;
+    }
+    else {
+      return false;
+    }
+  };
+
+  /**
    * Returns the name of the file
    * @returns {String} Name of the file
    */
