@@ -248,7 +248,7 @@ moback.queryMgr = function (table) {
    * Set's a filter to the query so the key should be regex exp applied to key.
    * Please use this filter on string only.
    * @param {String} key Key column in the table
-   * @param {String} value Value that the column should match to
+   * @param {String} value The regex expression to apply to the filter
    * @returns {string} success message
    */
   this.applyRegex = function (key, value){
