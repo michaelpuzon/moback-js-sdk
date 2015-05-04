@@ -295,6 +295,42 @@ moback.queryMgr = function (table) {
   };
 
   /**
+   * Sets a filter so the results are within a geopoint location
+   * @param {String} key Key column of the table
+   * @param {Number} lat The latitude of the geopoint.
+   * @param {Number} lon The longitude of the geopoint.
+   * @param {Number} distance Optional distance value
+   * @param {String} distanceUnits Optional distance unit (km | mi | degrees)
+   * @returns {string}
+   */
+  this.near = function (key, lat, lon, distance, distanceUnits){
+    if (key && lat && lon){
+      var geoPoint = {
+        "__type": "GeoPoint",
+        "lat": lat,
+        "lon": lon
+      };
+      var newFilter = {};
+      newFilter[key] = {'$near' : geoPoint};
+      if (distance){
+        var distanceLabel = '$maxDistance';
+        if(distanceUnits){
+          if(distanceUnits == "km"){
+            distanceLabel = '$maxDistanceInKms';
+          } else if(distanceUnits == "mi"){
+            distanceLabel = '$maxDistanceInMiles';
+          }
+        }
+        newFilter[key][distanceLabel] = distance;
+      }
+      filters.push(newFilter);
+      return ("Added filter: near " + key + " : " + geoPoint);
+    } else {
+      return ("Key and geopoints are required");
+    }
+  };
+
+  /**
    * Returns all the current filters applied to the query
    * @returns {Array}
    */

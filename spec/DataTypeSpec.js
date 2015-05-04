@@ -55,11 +55,11 @@ describe("Moback Data Type Manager", function() {
 
   it("should update created geopoint object" ,function(){
     expect(typeof geoObj.setGeoPoint).toBe("function");
-    geoObj.setGeoPoint( 20, 52 );
+    geoObj.setGeoPoint( 70, 70 );
 
     var geoValue = geoObj.getValue();
-    expect(geoValue.lat).toBe(20);
-    expect(geoValue.lon).toBe(52);
+    expect(geoValue.lat).toBe(70);
+    expect(geoValue.lon).toBe(70);
   });
 
   /**
@@ -71,7 +71,7 @@ describe("Moback Data Type Manager", function() {
     expect(fromObjDate.iso).toBe("2008-06-25T07:00:00.000Z");
     mobackTestObject.set("myLocation", geoObj);
     var fromGeo = mobackTestObject.get("myLocation");
-    expect(fromGeo.lat).toBe(20);
+    expect(fromGeo.lat).toBe(70);
   });
 
   /**
@@ -87,6 +87,22 @@ describe("Moback Data Type Manager", function() {
       done();
     });
   });
+
+  describe("test queries for geopoints", function(){
+    var mobackQuery = new Moback.queryMgr('DateTypes');
+
+    //this.near = function (key, lat, lon, distance, distanceUnits){
+
+    it("return the geopoint with a near filter", function(done){
+      mobackQuery.near("myLocation", 30.1, 40.1, 100);
+      mobackQuery.fetch(function(data){
+        console.log(data);
+        expect(data.length).toEqual(1);
+        done();
+      })
+    });
+  });
+
 
   /**
    * To test if the object can be deleted

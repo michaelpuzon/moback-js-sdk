@@ -61,18 +61,16 @@ moback.objMgr = function (table) {
         }
       } else {
         //check if pointer structure
-        if(existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Pointer"){
+        if(existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Pointer") {
           var parentObj = new Moback.objMgr(existingObj[prop]['className']);
           parentObj.id = existingObj[prop]['objectId'];
           parent = parentObj;
-        } else if(existingObj[prop].length && existingObj[prop][0]['__type'] &&
-          existingObj[prop][0]['__type'] == "Pointer"){
+        } else if(existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Relation"){
           //relations structure
           var relObj = new Relation(prop);
-          for (var i = 0; i < existingObj[prop].length; i++) {
-            var pointerObj = {};
-            var pointerObj = new Moback.objMgr(existingObj[prop][i].className);
-            pointerObj.id = existingObj[prop][i].objectId;
+          for (var i = 0; i < existingObj[prop].value.length; i++) {
+            var pointerObj = new Moback.objMgr(existingObj[prop].value[i].className);
+            pointerObj.id = existingObj[prop].value[i].objectId;
             relObj.currentObjects.push(pointerObj);
           }
           relations.push(relObj);
@@ -324,7 +322,7 @@ moback.objMgr = function (table) {
   /**
    * The relation object. This supports add, remove methods for relations.
    * You can also call the getSaved, to view saved relations for the object.
-   * A inspect method is also available for viewing all relations in the current object.
+   * An inspect method is also available for viewing all relations in the current object.
    * @param {String} name Will be used as the key for the relations array.
    */
   this.relation = function(name) {
