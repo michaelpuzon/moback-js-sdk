@@ -121,6 +121,31 @@ describe("Moback Data Type Manager", function() {
         done();
       })
     });
+
+    it("within filter should fail with just one geopoint", function(){
+      mobackQuery.resetFilters();
+      var geoPoints = [];
+      var testGeoObj = new Moback.GeoPoint( 11, 17 );
+      geoPoints.push(testGeoObj);
+      var msg = mobackQuery.within("myLocation", geoPoints);
+      expect(msg).toBe("At least two geopoints are required");
+    });
+
+    it("within filter should return geopoint within boundaries", function(done){
+      mobackQuery.resetFilters();
+      var geoPoints = [];
+      var testGeoObj1 = new Moback.GeoPoint( 11.1, 17.1 );
+      var testGeoObj2 = new Moback.GeoPoint( 55.1, 55.1 );
+      geoPoints.push(testGeoObj1);
+      geoPoints.push(testGeoObj2);
+      mobackQuery.within("myLocation", geoPoints);
+      mobackQuery.fetch(function(data){
+        console.log(data);
+        expect(data.length).toEqual(1);
+        done();
+      })
+    });
+
   });
 
 

@@ -297,10 +297,10 @@ moback.queryMgr = function (table) {
   /**
    * Sets a filter so the results are within a geopoint location
    * @param {String} key Key column of the table
-   * @param {Number} lat The latitude of the geopoint.
-   * @param {Number} lon The longitude of the geopoint.
+   * @param {Number} lat The latitude of the target geopoint.
+   * @param {Number} lon The longitude of the target geopoint.
    * @param {Number} distance Optional distance value
-   * @param {String} distanceUnits Optional distance unit (km | mi | degrees)
+   * @param {String} distanceUnits Optional distance unit (km | mi | degrees), defaults to degrees
    * @returns {string}
    */
   this.near = function (key, lat, lon, distance, distanceUnits){
@@ -325,6 +325,31 @@ moback.queryMgr = function (table) {
       }
       filters.push(newFilter);
       return ("Added filter: near " + key + " : " + geoPoint);
+    } else {
+      return ("Key and geopoints are required");
+    }
+  };
+
+  /**
+   * A geopoint filter to find geopoints within a set of gepoints
+   * @param {String} key Key column of the table
+   * @param {Array} geoPoints Array of geopoints to find geoppoints within
+   * @returns {string}
+   */
+  this.within = function (key, geoPoints){
+    if (key && geoPoints){
+      if(geoPoints.length < 2){
+        return "At least two geopoints are required";
+      }
+      //construct the query
+      var geoPointArray = [];
+      for (var i = 0; i < geoPoints.length; i++) {
+        geoPointArray.push(geoPoints[i].getValue());
+      }
+      var newFilter = {};
+      newFilter[key] = {'$within' : { "$box": geoPointArray } };
+      filters.push(newFilter);
+      return ("Added filter: within " + key + " : " + geoPoints);
     } else {
       return ("Key and geopoints are required");
     }
