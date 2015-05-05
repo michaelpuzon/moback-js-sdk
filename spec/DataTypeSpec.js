@@ -55,11 +55,11 @@ describe("Moback Data Type Manager", function() {
 
   it("should update created geopoint object" ,function(){
     expect(typeof geoObj.setGeoPoint).toBe("function");
-    geoObj.setGeoPoint( 70, 70 );
+    geoObj.setGeoPoint( 32, 42 );
 
     var geoValue = geoObj.getValue();
-    expect(geoValue.lat).toBe(70);
-    expect(geoValue.lon).toBe(70);
+    expect(geoValue.lat).toBe(32);
+    expect(geoValue.lon).toBe(42);
   });
 
   /**
@@ -71,7 +71,7 @@ describe("Moback Data Type Manager", function() {
     expect(fromObjDate.iso).toBe("2008-06-25T07:00:00.000Z");
     mobackTestObject.set("myLocation", geoObj);
     var fromGeo = mobackTestObject.get("myLocation");
-    expect(fromGeo.lat).toBe(70);
+    expect(fromGeo.lat).toBe(32);
   });
 
   /**
@@ -93,8 +93,28 @@ describe("Moback Data Type Manager", function() {
 
     //this.near = function (key, lat, lon, distance, distanceUnits){
 
-    it("return the geopoint with a near filter", function(done){
-      mobackQuery.near("myLocation", 30.1, 40.1, 100);
+    it("return the geopoint with a default near filter", function(done){
+      mobackQuery.near("myLocation", 30.3, 40.3, 10);
+      mobackQuery.fetch(function(data){
+        console.log(data);
+        expect(data.length).toEqual(1);
+        done();
+      })
+    });
+
+    it("return the geopoint with a default near filter for km", function(done){
+      mobackQuery.resetFilters();
+      mobackQuery.near("myLocation", 30.2, 40.2, 1000, "km");
+      mobackQuery.fetch(function(data){
+        console.log(data);
+        expect(data.length).toEqual(1);
+        done();
+      })
+    });
+
+    it("return the geopoint with a default near filter for mi", function(done){
+      mobackQuery.resetFilters();
+      mobackQuery.near("myLocation", 30.2, 40.2, 3000, "mi");
       mobackQuery.fetch(function(data){
         console.log(data);
         expect(data.length).toEqual(1);
