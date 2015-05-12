@@ -61,15 +61,16 @@ moback.objMgr = function (table) {
         }
       } else {
         //check if pointer structure
-        if(existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Pointer") {
-          var parentObj = new Moback.objMgr(existingObj[prop]['className']);
-          parentObj.id = existingObj[prop]['objectId'];
-          parent = parentObj;
-        } else if(existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Relation"){
+        if(existingObj[prop] && existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Pointer") {
+          var newObj = new moback.objMgr(existingObj[prop]['className']);
+          newObj.id = existingObj[prop]['objectId'];
+          //parent = parentObj;
+          self.set(prop, newObj);
+        } else if(existingObj[prop] && existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Relation"){
           //relations structure
           var relObj = new Relation(prop);
           for (var i = 0; i < existingObj[prop].value.length; i++) {
-            var pointerObj = new Moback.objMgr(existingObj[prop].value[i].className);
+            var pointerObj = new moback.objMgr(existingObj[prop].value[i].className);
             pointerObj.id = existingObj[prop].value[i].objectId;
             relObj.currentObjects.push(pointerObj);
           }
@@ -92,7 +93,7 @@ moback.objMgr = function (table) {
     if(key == "parent"){
       parent = value;
       successMsg = "Parent set";
-    } else if(typeof value.getValue != "undefined" && value.getValue() != false){
+    } else if(value && typeof value.getValue != "undefined" && value.getValue() != false){
       var customObj = value.getValue();
       data[key] = customObj;
       successMsg = "Property set";
@@ -113,10 +114,16 @@ moback.objMgr = function (table) {
       return parent;
     } else {
       if(data[key]) {
-        return data[key];
+        /*
+        if(data[key].__type && data[key].__type == 'GeoPoint'){
+          return new Mo
+        } else {
+        */
+          return data[key];
+        //}
       }
     }
-    return ("Property does not exist");
+    return (null);
   };
 
     /**

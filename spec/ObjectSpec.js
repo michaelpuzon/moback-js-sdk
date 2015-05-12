@@ -28,7 +28,7 @@ describe("Testing Moback Objects Manager", function(){
         mobackTestObject.set("Lead","Benedict Cumberbatch");
         expect(mobackTestObject.get("Lead")).toEqual("Benedict Cumberbatch");
         mobackTestObject.unset("Lead");
-        expect(mobackTestObject.get("Lead")).toEqual("Property does not exist");
+        expect(mobackTestObject.get("Lead")).toBe(null);
         mobackTestObject.set("lead","Benedict Cumberbatch");
         expect(mobackTestObject.get("lead")).toEqual("Benedict Cumberbatch");
         mobackTestObject.set("genre","Thriller");

@@ -12,6 +12,7 @@ moback.queryMgr = function (table) {
   var skip = false;
   var order = false;
   var keys = false;
+  var includes = [];
   var queryMode = "and";
 
   /**
@@ -40,7 +41,7 @@ moback.queryMgr = function (table) {
         if(res.results){
           var objArray = [];
           for (var i = 0; i < res.results.length; i++) {
-            var mobackObj = new Moback.objMgr(rowTable);
+            var mobackObj = new moback.objMgr(rowTable);
             mobackObj.createFromExistingObject(res.results[i]);
             objArray.push(mobackObj);
           }
@@ -81,6 +82,13 @@ moback.queryMgr = function (table) {
     if(keys){
       query = query + "&keys=" + keys;
     }
+    if(includes.length > 0){
+      var includeStr = "";
+      for (var i = 0; i < includes.length; i++) {
+        includeStr += includes[i] + ",";
+      }
+      query = query + "&include=" + includeStr;
+    }
     if(query == "where=") {
       return '';
     } else {
@@ -95,13 +103,21 @@ moback.queryMgr = function (table) {
    */
   this.fetchSingle = function (rowId, callback) {
     if (rowTable){
-      var url = baseUrlAPI + "collections/" + rowTable + "/" + rowId;
+      var query = "";
+      if(includes.length > 0){
+        var includeStr = "";
+        for (var i = 0; i < includes.length; i++) {
+          includeStr += includes[i] + ",";
+        }
+        query = query + "?include=" + includeStr;
+      }
+      var url = baseUrlAPI + "collections/" + rowTable + "/" + rowId + query;
       var headers = {
         'X-Moback-Environment-Key': envKey,
         'X-Moback-Application-Key': appKey
       };
       microAjax('GET', url, function (res) {
-        var mobackObj = new Moback.objMgr(rowTable);
+        var mobackObj = new moback.objMgr(rowTable);
         mobackObj.createFromExistingObject(res);
         callback(mobackObj);
       }, headers);
@@ -441,6 +457,22 @@ moback.queryMgr = function (table) {
       return ("value has to be set");
     }
   };
+
+  /**
+   * On query of an object, return the results of whole object in pointer columns
+   * @param {String} key Key column of the table
+   * @returns {string}
+   */
+  this.include = function (key){
+    if (key){
+      includes.push(key);
+      return ("Add include for " + key);
+    } else {
+      return ("value has to be set");
+    }
+  };
+
+
 
   /**
    * Only return the columns selected
