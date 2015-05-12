@@ -228,7 +228,16 @@ moback.objMgr = function (table) {
 
     /*for each key, assign it to a value*/
     for(var key in data){
-      postData[key] = data[key];
+      //this is a pointer to another table, save it like below
+      if(data[key].id){
+        postData[key] = {
+          "__type":"Pointer",
+          "objectId": data[key].id,
+          "className": data[key].className
+        };
+      } else {
+        postData[key] = data[key];
+      }
     }
 
     saveAPI(postData, callback);
