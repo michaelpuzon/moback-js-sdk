@@ -318,7 +318,7 @@ describe("Moback Query Manager", function() {
           var check = data.length;
           for(var z=0; z < check; z++) {
               console.log(data[z].get("Genre"));
-              expect(data[z].get("Genre")).toEqual("Property does not exist");
+              expect(data[z].get("Genre")).not.toBeTruthy();
           }
           done();
       })
@@ -392,7 +392,7 @@ describe("Moback Query Manager", function() {
           console.log(data);
           var check = data.length;
           for(var z=0; z < check-1; z++) {
-              expect(data[z].get("Duration")).toEqual("Property does not exist");
+              expect(data[z].get("Duration")).not.toBeTruthy();
               expect(data[z].get("Lead")).toBeTruthy();
           }
           done();
