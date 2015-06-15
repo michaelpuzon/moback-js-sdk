@@ -231,15 +231,20 @@ moback.objMgr = function (table) {
       //this is a pointer to another table, save it like below
       if(data[key].id){
         postData[key] = {
-          "__type":"Pointer",
+          "__type": "Pointer",
           "objectId": data[key].id,
+          "className": data[key].className
+        };
+      } else if(data[key].objectId) {
+        postData[key] = {
+          "__type": "Pointer",
+          "objectId": data[key].objectId,
           "className": data[key].className
         };
       } else {
         postData[key] = data[key];
       }
     }
-
     saveAPI(postData, callback);
   };
 
