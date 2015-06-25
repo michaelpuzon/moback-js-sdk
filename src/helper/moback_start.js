@@ -14,3 +14,13 @@
   moback.showAppKey = function () {
     return {appKey: appKey, envKey: envKey};
   };
+
+  moback.setAPILocation = function (newLocation) {
+    baseUrl = newLocation;
+  };
+
+  moback.showAPILocation = function () {
+    return {url: baseUrl};
+  };
+
+
