@@ -50,6 +50,11 @@ function microAjax(method, url, callbackFunction, headers, postData, fileMode) {
   } else {
     httpRequest.open(method, url, true);
   }
+  //Attach User Session if present
+  var userSession = moback.getSession();
+  if(userSession){
+    httpRequest.setRequestHeader("X-Moback-SessionToken-Key", userSession);
+  }
   if(!fileMode){
     httpRequest.setRequestHeader("Content-Type", "application/json");
   }

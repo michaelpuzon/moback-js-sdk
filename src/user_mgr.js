@@ -3,9 +3,8 @@
  */
 moback.userMgr = function () {
   moback.objMgr.call(this, "__appUsers"); //inherit the moback obj mgr
-  //var userObjectId = false;
-  //var data = {};
-  var sessionToken = false;
+
+
   var self = this;
 
   /**
@@ -44,6 +43,7 @@ moback.userMgr = function () {
       if(res.response.objectId && res.ssotoken){
         self.id = res.response.objectId;
         sessionToken = res.ssotoken;
+        moback.saveSession();
       }
       callback(res);
     }, headers, postData);
@@ -56,11 +56,12 @@ moback.userMgr = function () {
    */
   this.loginWithSessionToken = function (userSessionToken, callback) {
     sessionToken = userSessionToken;
+    moback.saveSession();
     var url = baseUrl + "usermanager/api/users/user";
     var headers = {
       'X-Moback-Environment-Key': envKey,
-      'X-Moback-Application-Key': appKey,
-      'X-Moback-SessionToken-Key': sessionToken
+      'X-Moback-Application-Key': appKey
+      //'X-Moback-SessionToken-Key': sessionToken
     };
     microAjax('GET', url, function (res) {
       if(res.responseObject.code && res.responseObject.code == '1000'){
@@ -83,14 +84,11 @@ moback.userMgr = function () {
   };
 
   /**
-   * Returns the session token if the user is logged in else returns false
+   * Returns the session token if the user is logged in else returns null
    * @returns {String} sessionToken or false
    */
   this.getSessionToken = function(){
-      if(sessionToken) {
-        return sessionToken;
-      }
-      return false;
+    return moback.getSession();
   };
 
   /**
@@ -98,7 +96,8 @@ moback.userMgr = function () {
    * @returns {string}
    */
   this.logout = function(){
-    sessionToken = false;
+    sessionToken = null;
+    moback.clearSession();
     delete self.id;
     return "User has been successfully logged out."
   };
@@ -190,8 +189,8 @@ moback.userMgr = function () {
       var url = baseUrl + "usermanager/api/users/user";
       var headers = {
           'X-Moback-Environment-Key': envKey,
-          'X-Moback-Application-Key': appKey,
-          'X-Moback-SessionToken-Key': sessionToken
+          'X-Moback-Application-Key': appKey
+          //'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('DELETE', url, function (res) {
           callback(res);
@@ -212,8 +211,8 @@ moback.userMgr = function () {
       var postdata = {"inviteeID": inviteeId};
       var headers = {
         'X-Moback-Environment-Key': envKey,
-        'X-Moback-Application-Key': appKey,
-        'X-Moback-SessionToken-Key': sessionToken
+        'X-Moback-Application-Key': appKey
+        //'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('POST', url, function (res) {
         callback(res);

@@ -26,9 +26,9 @@ describe("Moback User Manager", function(){
         userData["userId"] = "john" + timestamp;
         mobackUser.set("password", "mypassword");
         userData["password"] = "mypassword";
-        mobackUser.set("email", "john" + timestamp + "@example.com");
-        expect(mobackUser.get("email")).toBe("john" + timestamp + "@example.com");
-        userData["email"] = "john" + timestamp + "@example.com";
+        mobackUser.set("email", "john" + timestamp + "@moback.com");
+        expect(mobackUser.get("email")).toBe("john" + timestamp + "@moback.com");
+        userData["email"] = "john" + timestamp + "@moback.com";
         mobackUser.set("firstname", "John");
         expect(mobackUser.get("firstname")).toBe("John");
         userData["firstname"] = "John";

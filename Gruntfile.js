@@ -85,7 +85,7 @@ module.exports = function(grunt) {
     },
     watch: {
       js: {
-        files: ['src/**.js'],
+        files: ['src/**.js', 'src/helper/**.js'],
         tasks: ['clean:dev', 'concat']
       },
       docs: {
@@ -125,5 +125,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['clean:build', 'concat', 'uglify', 'doxx', 'markdown']);
 
-  grunt.registerTask('serve', ['connect:server', 'watch:js']);
+  grunt.registerTask('serve', ['build-dev', 'connect:server', 'watch:js']);
 };
