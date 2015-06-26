@@ -7,8 +7,8 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: 'dist/moback.js',
-        dest: 'dist/moback.min.js'
+        src: 'js/moback.js',
+        dest: 'js/moback.min.js'
       }
     },
     concat: {
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         src: ['src/helper/moback_start.js', 'src/user_mgr.js', 'src/obj_mgr.js', 'src/datatypes_mgr.js',
           'src/query_mgr.js', 'src/notification_mgr.js', 'src/file_mgr.js',
           'src/helper/ajax.js', 'src/helper/moback_end.js'],
-        dest: 'dist/moback.js'
+        dest: 'js/moback.js'
       }
     },
     doxx: {
@@ -58,17 +58,17 @@ module.exports = function(grunt) {
     },
     clean: {
       build: {
-        src: ["dist", "generated-docs"]
+        src: ["js", "generated-docs"]
       },
       dev: {
-        src: ["dist", "tmp"]
+        src: ["js", "tmp"]
       }
     },
     integrateAllJS: {
       main: {
         concatenatedJS: 'tmp/moback_concat.js', // Compiled template src
         src: 'src/master.js',
-        dest: 'dist/moback.js'
+        dest: 'js/moback.js'
       }
     },
     markdown: {
