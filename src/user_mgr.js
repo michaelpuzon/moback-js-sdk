@@ -18,7 +18,6 @@ moback.userMgr = function () {
       callback("userId, email, and password not set");
       return;
     }
-
     if(self.id){
       callback("User already created");
     } else {
@@ -44,8 +43,10 @@ moback.userMgr = function () {
         self.id = res.response.objectId;
         sessionToken = res.ssotoken;
         moback.saveSession();
+        self.loginWithSessionToken(sessionToken, callback);
+      } else {
+        callback(res);
       }
-      callback(res);
     }, headers, postData);
   };
 
@@ -190,10 +191,10 @@ moback.userMgr = function () {
       var headers = {
           'X-Moback-Environment-Key': envKey,
           'X-Moback-Application-Key': appKey
-          //'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('DELETE', url, function (res) {
-          callback(res);
+        self.logout();
+        callback(res);
       }, headers);
     } else {
         callback("Objects does not exist");

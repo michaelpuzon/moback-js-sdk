@@ -71,7 +71,6 @@ moback.userMgr = function () {
       callback("userId, email, and password not set");
       return;
     }
-
     if(self.id){
       callback("User already created");
     } else {
@@ -97,8 +96,10 @@ moback.userMgr = function () {
         self.id = res.response.objectId;
         sessionToken = res.ssotoken;
         moback.saveSession();
+        self.loginWithSessionToken(sessionToken, callback);
+      } else {
+        callback(res);
       }
-      callback(res);
     }, headers, postData);
   };
 
@@ -243,10 +244,10 @@ moback.userMgr = function () {
       var headers = {
           'X-Moback-Environment-Key': envKey,
           'X-Moback-Application-Key': appKey
-          //'X-Moback-SessionToken-Key': sessionToken
       };
       microAjax('DELETE', url, function (res) {
-          callback(res);
+        self.logout();
+        callback(res);
       }, headers);
     } else {
         callback("Objects does not exist");
@@ -298,7 +299,7 @@ moback.objMgr = function (table) {
   var relations = [];
 
     /**
-     * Creates an object in the table specified in the
+     * Deprecated Creates an object in the table specified in the
      * constructor.
      * @param {Object} rowObj
      * @param {Function} callback
@@ -538,11 +539,12 @@ moback.objMgr = function (table) {
       'X-Moback-Application-Key': appKey
     };
 
-    if(!rowObjectId) {
+    if(!self.id) {
+      var url;
       if(typeof self.createUser === "function"){
-        var url = baseUrl + "usermanager/api/users/signup";
+        url = baseUrl + "usermanager/api/users/signup";
       } else {
-        var url = baseUrl + "objectmgr/api/collections/" + table;
+        url = baseUrl + "objectmgr/api/collections/" + table;
       }
       microAjax('POST', url, function (res) {
         if(res.objectId){
@@ -553,8 +555,8 @@ moback.objMgr = function (table) {
         }
         callback(res);
       }, headers, postData);
-    } else if (rowObjectId && rowTable){
-      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
+    } else if (rowTable){
+      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
       microAjax('PUT', url, function (res) {
         callback(res);
       }, headers, postData);

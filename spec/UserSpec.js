@@ -4,6 +4,7 @@
 
 describe("Moback User Manager", function(){
   var mobackUser;
+  var mobackUser2;
   var userData = {};
   var sessionToken = "";
   var timestamp = new Date().getTime();
@@ -13,9 +14,10 @@ describe("Moback User Manager", function(){
      */
 
     it("should be able to instantiate a moback user", function (done) {
-        mobackUser = new Moback.userMgr();
-        expect(typeof mobackUser.createUser).toBe("function");
-        done();
+      mobackUser = new Moback.userMgr();
+      mobackUser2  = new Moback.userMgr();
+      expect(typeof mobackUser.createUser).toBe("function");
+      done();
     });
 
     /**
@@ -63,34 +65,25 @@ describe("Moback User Manager", function(){
      * Test user login
      */
     it("should login the created user", function (done) {
-        mobackUser.login(userData['userId'], userData['password'], function (data) {
-            console.log(data);
-            userData["ssotoken"] = data["ssotoken"];
-            expect(data.ssotoken).toBeDefined();
+        mobackUser2.login(userData['userId'], userData['password'], function (data) {
+            expect(data.userId).toBeDefined();
             done();
         });
     });
 
     it("should get session of the user logged in",function(){
-      sessionToken = mobackUser.getSessionToken();
-      expect(mobackUser.getSessionToken()).toBeTruthy();
+      sessionToken = mobackUser2.getSessionToken();
+      expect(mobackUser2.getSessionToken()).toBeTruthy();
     });
 
     /**
      *  Test get user details
      */
 
-    xit("should get details of the user logged in after re logging in", function (done) {
-      expect(mobackUser.logout()).toEqual("User has been successfully logged out.");
-
-      mobackUser.login(userData['userId'], userData['password'], function (data) {
-        mobackUser.getUserDetails(function (data) {
-          console.log(data);
-          expect(userData["userId"]).toEqual(mobackUser.get('userId'));
-          done();
-        });
-
-      });
+    it("should get details of the user logged in after re logging in", function() {
+      expect(mobackUser2.get('userId')).toEqual(userData['userId']);
+      expect(mobackUser2.get('firstname')).toEqual(userData['firstname']);
+      expect(mobackUser2.get('lastname')).toEqual(userData['lastname']);
     });
 
 
@@ -107,9 +100,9 @@ describe("Moback User Manager", function(){
     });
 
     it("should set the property that needs to be updated", function(done){
-        mobackUser.set("lastname", "Mayer");
+      mobackUser2.set("lastname", "Mayer");
         userData["lastname"] = "Mayer";
-        expect(mobackUser.get("lastname")).toBe("Mayer");
+        expect(mobackUser2.get("lastname")).toBe("Mayer");
         done();
     });
 
@@ -117,11 +110,11 @@ describe("Moback User Manager", function(){
      * Test update user
      */
     it("should update the details of the user logged in", function (done) {
-        mobackUser.save(function (data) {
+      mobackUser2.save(function (data) {
             console.log(data);
             expect(data["updatedAt"]).toBeDefined();
             done();
-        })
+      })
     });
 
     it("should login with valid sessionToken", function (done) {
@@ -145,7 +138,7 @@ describe("Moback User Manager", function(){
    it("should be able to login after logout", function (done) {
         mobackUser.login(userData['userId'], userData['password'], function (data) {
             console.log(data);
-            expect(data.ssotoken).toBeDefined();
+            expect(data.userId).toBeDefined();
             done();
         });
    });
@@ -157,10 +150,9 @@ describe("Moback User Manager", function(){
         });
     });
 
-/*  it("should not get user details for the deleted user", function (done) {
-        expect(mobackUser.getUserDetails()).toEqual("User session token is not set, please login the user first");
-        done();
-    });*/
+    it("should not get user details for the deleted user", function () {
+      expect(mobackUser.id).toBeFalsy();
+    });
 
     /**
      * Test sending invites

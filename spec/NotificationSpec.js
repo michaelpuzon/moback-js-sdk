@@ -36,7 +36,7 @@ describe("Moback Notification Manager", function() {
           userData[prop] = data[prop];
         }
         console.log(data);
-        expect(userData.ssotoken).toBeDefined();
+        expect(data.userId).toBeDefined();
         done();
       });
     });

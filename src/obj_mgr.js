@@ -20,7 +20,7 @@ moback.objMgr = function (table) {
   var relations = [];
 
     /**
-     * Creates an object in the table specified in the
+     * Deprecated Creates an object in the table specified in the
      * constructor.
      * @param {Object} rowObj
      * @param {Function} callback
@@ -260,11 +260,12 @@ moback.objMgr = function (table) {
       'X-Moback-Application-Key': appKey
     };
 
-    if(!rowObjectId) {
+    if(!self.id) {
+      var url;
       if(typeof self.createUser === "function"){
-        var url = baseUrl + "usermanager/api/users/signup";
+        url = baseUrl + "usermanager/api/users/signup";
       } else {
-        var url = baseUrl + "objectmgr/api/collections/" + table;
+        url = baseUrl + "objectmgr/api/collections/" + table;
       }
       microAjax('POST', url, function (res) {
         if(res.objectId){
@@ -275,8 +276,8 @@ moback.objMgr = function (table) {
         }
         callback(res);
       }, headers, postData);
-    } else if (rowObjectId && rowTable){
-      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + rowObjectId;
+    } else if (rowTable){
+      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
       microAjax('PUT', url, function (res) {
         callback(res);
       }, headers, postData);
