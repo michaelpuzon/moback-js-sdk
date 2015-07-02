@@ -140,6 +140,11 @@ moback.objMgr = function (table) {
     return 'item ' + key + ' unset';
   };
 
+  this.unsetAll = function() {
+    data = {};
+    return 'all items unset';
+  };
+
   /**
    * Saves the object in the table by
    * making an API call
@@ -334,6 +339,8 @@ moback.objMgr = function (table) {
         };
         microAjax('DELETE', url, function (res) {
           callback(res);
+          delete self.id;
+          self.unsetAll();
         }, headers);
     } else {
       callback("Objects does not exist");

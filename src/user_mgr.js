@@ -100,6 +100,7 @@ moback.userMgr = function () {
     sessionToken = null;
     moback.clearSession();
     delete self.id;
+    self.unsetAll();
     return "User has been successfully logged out."
   };
 

@@ -153,6 +153,7 @@ moback.userMgr = function () {
     sessionToken = null;
     moback.clearSession();
     delete self.id;
+    self.unsetAll();
     return "User has been successfully logged out."
   };
 
@@ -419,6 +420,11 @@ moback.objMgr = function (table) {
     return 'item ' + key + ' unset';
   };
 
+  this.unsetAll = function() {
+    data = {};
+    return 'all items unset';
+  };
+
   /**
    * Saves the object in the table by
    * making an API call
@@ -613,6 +619,8 @@ moback.objMgr = function (table) {
         };
         microAjax('DELETE', url, function (res) {
           callback(res);
+          delete self.id;
+          self.unsetAll();
         }, headers);
     } else {
       callback("Objects does not exist");
