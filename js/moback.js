@@ -57,7 +57,6 @@
 moback.userMgr = function () {
   moback.objMgr.call(this, "__appUsers"); //inherit the moback obj mgr
 
-
   var self = this;
 
   /**
@@ -120,16 +119,13 @@ moback.userMgr = function () {
     microAjax('GET', url, function (res) {
       if(res.responseObject.code && res.responseObject.code == '1000'){
         var user = res.user;
-        for (var prop in user) {
-          if(prop == "createdAt" || prop == "updatedAt"){
-            self[prop] = user[prop];
-          } else if(prop == "objectId"){
-            self.id = user[prop];
-          } else {
-            self.set(prop,user[prop]);
-          }
-        }
+        self.id = user.objectId;
+        self.fetch(callback);
+        //replace fetch call with these two lines, when user getter is fixed
+        /*
+        self.createFromExistingObject(res.user);
         callback(res.user);
+        */
       } else {
         callback(res);
       }
@@ -298,6 +294,7 @@ moback.objMgr = function (table) {
   var self = this;
   var parent = null;
   var relations = [];
+  var includes = [];
 
     /**
      * Deprecated Creates an object in the table specified in the
@@ -343,15 +340,14 @@ moback.objMgr = function (table) {
         //check if pointer structure
         if(existingObj[prop] && existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Pointer") {
           var newObj = new moback.objMgr(existingObj[prop]['className']);
-          newObj.id = existingObj[prop]['objectId'];
-          //parent = parentObj;
+          newObj.createFromExistingObject(existingObj[prop]);
           self.set(prop, newObj);
         } else if(existingObj[prop] && existingObj[prop]['__type'] && existingObj[prop]['__type'] == "Relation"){
           //relations structure
           var relObj = new Relation(prop);
           for (var i = 0; i < existingObj[prop].value.length; i++) {
             var pointerObj = new moback.objMgr(existingObj[prop].value[i].className);
-            pointerObj.id = existingObj[prop].value[i].objectId;
+            pointerObj.createFromExistingObject(existingObj[prop].value[i]);
             relObj.currentObjects.push(pointerObj);
           }
           relations.push(relObj);
@@ -594,6 +590,13 @@ moback.objMgr = function (table) {
    */
   this.fetch = function(callback) {
       var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
+      if(includes.length > 0){
+        var includeStr = "";
+        for (var i = 0; i < includes.length; i++) {
+          includeStr += includes[i] + ",";
+        }
+        url = url + "?include=" + includeStr;
+      }
       var headers = {
         'X-Moback-Environment-Key': envKey,
         'X-Moback-Application-Key': appKey
@@ -604,6 +607,19 @@ moback.objMgr = function (table) {
       }, headers);
   };
 
+  /**
+   * On query of an object, return the results of whole object in pointer columns
+   * @param {String} key Key column of the table
+   * @returns {string}
+   */
+  this.include = function (key){
+    if (key){
+      includes.push(key);
+      return ("Add include for " + key);
+    } else {
+      return ("value has to be set");
+    }
+  };
 
   /**
    * Removes the object from the table, cloud

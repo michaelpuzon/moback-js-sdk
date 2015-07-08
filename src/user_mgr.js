@@ -4,7 +4,6 @@
 moback.userMgr = function () {
   moback.objMgr.call(this, "__appUsers"); //inherit the moback obj mgr
 
-
   var self = this;
 
   /**
@@ -67,16 +66,13 @@ moback.userMgr = function () {
     microAjax('GET', url, function (res) {
       if(res.responseObject.code && res.responseObject.code == '1000'){
         var user = res.user;
-        for (var prop in user) {
-          if(prop == "createdAt" || prop == "updatedAt"){
-            self[prop] = user[prop];
-          } else if(prop == "objectId"){
-            self.id = user[prop];
-          } else {
-            self.set(prop,user[prop]);
-          }
-        }
+        self.id = user.objectId;
+        self.fetch(callback);
+        //replace fetch call with these two lines, when user getter is fixed
+        /*
+        self.createFromExistingObject(res.user);
         callback(res.user);
+        */
       } else {
         callback(res);
       }
