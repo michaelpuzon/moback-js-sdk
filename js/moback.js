@@ -327,6 +327,7 @@ moback.objMgr = function (table) {
   this.createFromExistingObject = function(existingObj){
     //var existingObj = this;
     //return existingObj;
+    relations = [];
     for(var prop in existingObj){
       //if default property assign it directly, else use set
       if(prop == 'createdAt' || prop == 'updatedAt' || prop == 'objectId'){

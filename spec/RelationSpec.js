@@ -104,6 +104,7 @@ describe("Testing Moback Relations", function(){
       it("should try fetching the saved object" ,function(done){
         mobackTestObjectFetched = new Moback.objMgr("table1");
         mobackTestObjectFetched.id = objectId;
+        mobackTestObjectFetched.include('table2');
         mobackTestObjectFetched.fetch(function(data){
           console.log(data);
           expect(data.objectId).toBeTruthy();
@@ -117,6 +118,8 @@ describe("Testing Moback Relations", function(){
         expect(savedRelations.length).toBeGreaterThan(0);
         expect(savedRelations[0].id).toBe(relObj1.id);
         expect(savedRelations[1].id).toBe(relObj2.id);
+        expect(savedRelations[0].get('name')).toBeTruthy();
+        expect(savedRelations[1].get('name')).toBeTruthy();
       });
 
 
