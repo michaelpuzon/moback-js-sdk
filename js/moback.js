@@ -509,21 +509,23 @@ moback.objMgr = function (table) {
 
     /*for each key, assign it to a value*/
     for(var key in data){
-      //this is a pointer to another table, save it like below
-      if(data[key].id){
-        postData[key] = {
-          "__type": "Pointer",
-          "objectId": data[key].id,
-          "className": data[key].className
-        };
-      } else if(data[key].objectId) {
-        postData[key] = {
-          "__type": "Pointer",
-          "objectId": data[key].objectId,
-          "className": data[key].className
-        };
-      } else {
-        postData[key] = data[key];
+      if(data[key] !== null){
+        //this is a pointer to another table, save it like below
+        if(data[key].id){
+          postData[key] = {
+            "__type": "Pointer",
+            "objectId": data[key].id,
+            "className": data[key].className
+          };
+        } else if(data[key].objectId) {
+          postData[key] = {
+            "__type": "Pointer",
+            "objectId": data[key].objectId,
+            "className": data[key].className
+          };
+        } else {
+          postData[key] = data[key];
+        }
       }
     }
     saveAPI(postData, callback);
@@ -535,6 +537,7 @@ moback.objMgr = function (table) {
    * @param {Function} callback
    */
   function saveAPI(postData, callback){
+    console.log(postData);
     //console.log(callback);
     var headers = {
       'X-Moback-Environment-Key': envKey,
