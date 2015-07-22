@@ -111,9 +111,9 @@ describe("Moback User Manager", function(){
      */
     it("should update the details of the user logged in", function (done) {
       mobackUser2.save(function (data) {
-            console.log(data);
-            expect(data["updatedAt"]).toBeDefined();
-            done();
+        console.log(data);
+        expect(data.code).toBe('1000');
+        done();
       })
     });
 

@@ -120,12 +120,10 @@ moback.userMgr = function () {
       if(res.responseObject.code && res.responseObject.code == '1000'){
         var user = res.user;
         self.id = user.objectId;
-        self.fetch(callback);
+        //self.fetch(callback);
         //replace fetch call with these two lines, when user getter is fixed
-        /*
         self.createFromExistingObject(res.user);
         callback(res.user);
-        */
       } else {
         callback(res);
       }
@@ -562,7 +560,12 @@ moback.objMgr = function (table) {
         callback(res);
       }, headers, postData);
     } else if (rowTable){
-      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
+      var url;
+      if(typeof self.createUser === "function"){
+        url = baseUrl + "usermanager/api/users/user";
+      } else {
+        url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
+      }
       microAjax('PUT', url, function (res) {
         callback(res);
       }, headers, postData);

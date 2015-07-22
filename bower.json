@@ -1,8 +1,8 @@
 {
   "name": "moback-js-sdk",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "authors": [
-    "Mike Puzon <michaelp@dobango.com>"
+    "Mike Puzon <michaelp@moback.com>"
   ],
   "description": "moBack Javascript SDK",
   "main": "js/moback.min.js",
@@ -12,7 +12,7 @@
     "sdk"
   ],
   "license": "MIT",
-  "homepage": "http://www.moback.com",
+  "homepage": "https://www.moback.com",
   "ignore": [
     "**/.*",
     "node_modules",

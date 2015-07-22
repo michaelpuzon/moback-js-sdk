@@ -286,7 +286,12 @@ moback.objMgr = function (table) {
         callback(res);
       }, headers, postData);
     } else if (rowTable){
-      var url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
+      var url;
+      if(typeof self.createUser === "function"){
+        url = baseUrl + "usermanager/api/users/user";
+      } else {
+        url = baseUrl + "objectmgr/api/collections/" + rowTable + "/" + self.id;
+      }
       microAjax('PUT', url, function (res) {
         callback(res);
       }, headers, postData);

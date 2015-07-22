@@ -67,12 +67,9 @@ moback.userMgr = function () {
       if(res.responseObject.code && res.responseObject.code == '1000'){
         var user = res.user;
         self.id = user.objectId;
-        self.fetch(callback);
-        //replace fetch call with these two lines, when user getter is fixed
-        /*
+        //self.fetch(callback);
         self.createFromExistingObject(res.user);
         callback(res.user);
-        */
       } else {
         callback(res);
       }
