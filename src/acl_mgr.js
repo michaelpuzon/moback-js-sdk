@@ -9,6 +9,13 @@ moback.aclMgr = function (existingACL) {
 
   if(existingACL){
     acl = existingACL;
+    /*
+    delete acl.createdBy;
+    for (var i = 0; i < acl.userWrite.length; i++) {
+      delete acl.userWrite[i].ruleType;
+      delete acl.userWrite[i].userId;
+    }
+    */
   } else {
     acl = {
       "globalRead": true,
@@ -68,13 +75,13 @@ moback.aclMgr = function (existingACL) {
    * @param {Boolean} flag boolean flag to set this role to write, or remove role
    */
   this.setRoleReadPermission = function(role, flag){
-    for (var i = 0; i < acl.groupWrite.length; i++) {
+    for (var i = 0; i < acl.groupRead.length; i++) {
       if (acl.groupRead[i].roleName == role){
         if(flag){
           return 'Role already in the permission list';
         } else {
           acl.groupRead.splice(i, 1);
-          return 'Role write permission removed';
+          return 'Role read permission removed';
         }
       }
     }

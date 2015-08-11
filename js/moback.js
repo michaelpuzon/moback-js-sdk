@@ -61,7 +61,6 @@ moback.userMgr = function () {
 
   /**
    * creates a moback user
-   * userObj has to have some required fields(userId, email, password) before calling createUser method
    * @param {Function} callback Will output either success or failed message.
    */
   this.createUser = function (callback) {
@@ -121,7 +120,6 @@ moback.userMgr = function () {
         var user = res.user;
         self.id = user.objectId;
         //self.fetch(callback);
-        //replace fetch call with these two lines, when user getter is fixed
         self.createFromExistingObject(res.user);
         callback(res.user);
       } else {
@@ -289,6 +287,7 @@ moback.objMgr = function (table) {
   var rowObjectId = false;
   var rowTable = table;
   var data = {};
+  var acl = null;
   var self = this;
   var parent = null;
   var relations = [];
@@ -350,6 +349,9 @@ moback.objMgr = function (table) {
             relObj.currentObjects.push(pointerObj);
           }
           relations.push(relObj);
+        } else if(existingObj[prop] && prop == "__acl"){
+          //relations structure
+          acl = new moback.aclMgr(existingObj[prop]);
         } else {
           //regular key value
           self.set(prop, existingObj[prop]);
@@ -358,11 +360,11 @@ moback.objMgr = function (table) {
     }
   };
 
-    /**
-     * Sets the properties of the object
-     * @param {String} key
-     * @param {Object} value Value can be string, object, number, boolean
-     */
+  /**
+   * Sets the properties of the object
+   * @param {String} key
+   * @param {Object} value Value can be string, object, number, boolean
+   */
   this.set = function(key, value) {
     var successMsg = "";
     if(key == "parent"){
@@ -379,11 +381,37 @@ moback.objMgr = function (table) {
     return successMsg;
   };
 
-    /**
-     * Returns the value of the property passed to this method
-     * @param {String} key Key used to the parameter of object
-     * @returns {*}
-     */
+  /**
+   * Sets the acl permissions of the object
+   * @param {Object} aclObj Pass an instance of Moback.aclMgr
+   */
+  this.setACL = function(aclObj) {
+    var successMsg = "";
+    if(aclObj){
+      acl = aclObj;
+      successMsg = "ACL for object set";
+    } else {
+      successMsg = "ACL object missing";
+    }
+    return successMsg;
+  };
+
+  /**
+   * Returns the acl permissions of the object
+   */
+  this.getACL = function() {
+    if(acl){
+      return acl;
+    }
+    return null;
+  };
+
+
+  /**
+   * Returns the value of the property passed to this method
+   * @param {String} key Key used to the parameter of object
+   * @returns {*}
+   */
   this.get = function(key) {
     if(key == "parent"){
       return parent;
@@ -526,6 +554,9 @@ moback.objMgr = function (table) {
           postData[key] = data[key];
         }
       }
+    }
+    if(acl){
+      postData['__acl'] = acl.getACL();
     }
     saveAPI(postData, callback);
   };
@@ -791,6 +822,203 @@ moback.GeoPoint.prototype.getValue = function() {
  */
 moback.GeoPoint.prototype.setGeoPoint = function(lat, lon) {
   this.geoObj = { "__type" : "GeoPoint" , "lat":lat, "lon":lon};
+};
+/**
+ * ACL manager allows you to set permissions to a moback object.
+ * @param {Object} fileName Filename to be used for the file
+ * @param {File} fileData The actual file data
+ */
+moback.aclMgr = function (existingACL) {
+
+  var acl = {};
+
+  if(existingACL){
+    acl = existingACL;
+    /*
+    delete acl.createdBy;
+    for (var i = 0; i < acl.userWrite.length; i++) {
+      delete acl.userWrite[i].ruleType;
+      delete acl.userWrite[i].userId;
+    }
+    */
+  } else {
+    acl = {
+      "globalRead": true,
+      "globalWrite": true,
+      "userRead": [],
+      "userWrite": [],
+      "groupRead": [],
+      "groupWrite": []
+    };
+  }
+
+  /**
+   * Sets the acl's public write permission
+   * @param {Boolean} flag boolean flag to set this variable true or false
+   */
+  this.setPublicWritePermission = function(flag){
+    acl.globalWrite = flag;
+    return "Public Permission set";
+  };
+
+  /**
+   * Sets the acl's public read permission
+   * @param {Boolean} flag boolean flag to set this variable true or false
+   */
+  this.setPublicReadPermission = function(flag){
+    acl.globalRead = flag;
+    return "Public Permission set";
+  };
+
+  /**
+   * Add or remove a role to the role write permission list
+   * @param {String} role role name to add
+   * @param {Boolean} flag boolean flag to set this role to write, or remove role
+   */
+  this.setRoleWritePermission = function(role, flag){
+    for (var i = 0; i < acl.groupWrite.length; i++) {
+      if (acl.groupWrite[i].roleName == role){
+        if(flag){
+          return 'Role already in the permission list';
+        } else {
+          acl.groupWrite.splice(i, 1);
+          return 'Role write permission removed';
+        }
+      }
+    }
+    if(flag){
+      acl.groupWrite.push({roleName: role});
+      return 'Role permission added';
+    } else {
+      return 'Could not find role permission to remove';
+    }
+  };
+
+  /**
+   * Add or remove a role to the role read permission list
+   * @param {String} role role name to add
+   * @param {Boolean} flag boolean flag to set this role to write, or remove role
+   */
+  this.setRoleReadPermission = function(role, flag){
+    for (var i = 0; i < acl.groupRead.length; i++) {
+      if (acl.groupRead[i].roleName == role){
+        if(flag){
+          return 'Role already in the permission list';
+        } else {
+          acl.groupRead.splice(i, 1);
+          return 'Role read permission removed';
+        }
+      }
+    }
+    if(flag){
+      acl.groupRead.push({roleName: role});
+      return 'Role permission added';
+    } else {
+      return 'Could not find role permission to remove';
+    }
+  };
+
+  /**
+   * Add or remove a role to the role write permission list
+   * @param {String} user user id to add
+   * @param {Boolean} flag boolean flag to set this user to write, or remove user
+   */
+  this.setUserWritePermission = function(user, flag){
+    for (var i = 0; i < acl.userWrite.length; i++) {
+      if (acl.userWrite[i].userObjectId == user){
+        if(flag){
+          return 'User already in the permission list';
+        } else {
+          acl.userWrite.splice(i, 1);
+          return 'User write permission removed';
+        }
+      }
+    }
+    if(flag){
+      acl.userWrite.push({userObjectId: user});
+      return 'User permission added';
+    } else {
+      return 'Could not find User permission to remove';
+    }
+  };
+
+  /**
+   * Add or remove a user to the user read permission list
+   * @param {String} user user id to add
+   * @param {Boolean} flag boolean flag to set this user to write, or remove user
+   */
+  this.setUserReadPermission = function(user, flag){
+    for (var i = 0; i < acl.userRead.length; i++) {
+      if (acl.userRead[i].userObjectId == user){
+        if(flag){
+          return 'User already in the permission list';
+        } else {
+          acl.userRead.splice(i, 1);
+          return 'User read permission removed';
+        }
+      }
+    }
+    if(flag){
+      acl.userRead.push({userObjectId: user});
+      return 'User permission added';
+    } else {
+      return 'Could not find User permission to remove';
+    }
+  };
+
+  this.getACL = function(){
+    return acl;
+  };
+
+  /**
+   * Returns the whole acl object in json form
+   */
+  this.getInfo = function(){
+    return JSON.stringify(acl);
+  };
+
+
+};
+
+/**
+ * Moback Role Mgr allows you to create roles to assign to users for permissions.
+ */
+moback.roleMgr = function (roleName) {
+  moback.objMgr.call(this, "__roleSettings"); //inherit the moback obj mgr
+
+  var self = this;
+
+  if(roleName){
+    self.set('roleName', roleName);
+  }
+
+  /**
+   * creates a moback role
+   * role name has to be set before creation
+   * @param {Function} callback Will output either success or failed message.
+   */
+  this.createRole = function (callback) {
+    if(self.get("roleName") == "Property does not exist"){
+      callback("role name is not set");
+      return;
+    }
+    if(self.id){
+      callback("Role already created");
+    } else {
+      self.save(callback);
+    }
+  };
+
+  /**
+   * creates a shortcut to users relations
+   * will return a users relation method
+   */
+  this.users = function () {
+    return self.relation('assigned');
+  };
+
+
+
 };
 /**
  * The Query manager object. This object allows you to run all sorts of queries in a table.

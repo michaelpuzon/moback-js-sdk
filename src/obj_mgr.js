@@ -77,6 +77,9 @@ moback.objMgr = function (table) {
             relObj.currentObjects.push(pointerObj);
           }
           relations.push(relObj);
+        } else if(existingObj[prop] && prop == "__acl"){
+          //relations structure
+          acl = new moback.aclMgr(existingObj[prop]);
         } else {
           //regular key value
           self.set(prop, existingObj[prop]);
@@ -119,6 +122,16 @@ moback.objMgr = function (table) {
       successMsg = "ACL object missing";
     }
     return successMsg;
+  };
+
+  /**
+   * Returns the acl permissions of the object
+   */
+  this.getACL = function() {
+    if(acl){
+      return acl;
+    }
+    return null;
   };
 
 

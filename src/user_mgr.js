@@ -8,7 +8,6 @@ moback.userMgr = function () {
 
   /**
    * creates a moback user
-   * userObj has to have some required fields(userId, email, password) before calling createUser method
    * @param {Function} callback Will output either success or failed message.
    */
   this.createUser = function (callback) {
