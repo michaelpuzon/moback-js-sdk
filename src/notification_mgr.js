@@ -1,6 +1,7 @@
 /**
  * Notification manager allows you to send notifications to users via the JS sdk.
  * It does not allow to receive notifications, at the moment.
+ * @constructor
  */
 moback.notificationMgr = function(){
 

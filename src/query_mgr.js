@@ -2,6 +2,7 @@
  * The Query manager object. This object allows you to run all sorts of queries in a table.
  * Pass table parameter on query object creation to use right away.
  * If table parameter is omitted, please use set table function afterwards.
+ * @constructor
  * @param {String} table Table name to use for all query operations
  */
 moback.queryMgr = function (table) {

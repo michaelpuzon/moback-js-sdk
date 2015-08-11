@@ -1,5 +1,7 @@
 /**
  * Moback Role Mgr allows you to create roles to assign to users for permissions.
+ * @constructor
+ * @param {Sting} roleName Role name to be set for the role.
  */
 moback.roleMgr = function (roleName) {
   moback.objMgr.call(this, "__roleSettings"); //inherit the moback obj mgr

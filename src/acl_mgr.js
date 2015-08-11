@@ -2,6 +2,7 @@
  * ACL manager allows you to set permissions to a moback object.
  * @param {Object} fileName Filename to be used for the file
  * @param {File} fileData The actual file data
+ * @constructor
  */
 moback.aclMgr = function (existingACL) {
 

@@ -2,6 +2,7 @@
  * File manager allows a file to be saved in the cloud, and be subquently used in moback objects.
  * @param {String} fileName Filename to be used for the file
  * @param {File} fileData The actual file data
+ * @constructor
  */
 moback.fileMgr = function (fileData, fileName) {
   var fileUrl = false;

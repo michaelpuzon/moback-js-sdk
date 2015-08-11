@@ -1,5 +1,6 @@
 /**
  * Moback User Mgr allows you to create users, have them login later, retrieve user details.
+ * @constructor
  */
 moback.userMgr = function () {
   moback.objMgr.call(this, "__appUsers"); //inherit the moback obj mgr

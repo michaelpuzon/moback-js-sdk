@@ -3,6 +3,7 @@
  * With that one row of data, you can do set function, for setting a paramter, save to save changes.
  * Object manager also supports parents for one to one pointers, and relations for one to many,
  * and many to many relationships.
+ * @constructor
  * @param {String} table Required parameter to know which table to do operations on.
  * @property id The object id of the object
  * @property createdAt The object's created at date

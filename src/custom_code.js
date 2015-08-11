@@ -1,5 +1,6 @@
 /**
  * Custom code allows you to define functions that are to be executed in the cloud.
+ * @constructor
  */
 moback.customCode = function () {
   moback.customCode.mobackCloudFunctions = [];
