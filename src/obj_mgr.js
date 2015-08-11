@@ -15,6 +15,7 @@ moback.objMgr = function (table) {
   var rowObjectId = false;
   var rowTable = table;
   var data = {};
+  var acl = null;
   var self = this;
   var parent = null;
   var relations = [];
@@ -84,11 +85,11 @@ moback.objMgr = function (table) {
     }
   };
 
-    /**
-     * Sets the properties of the object
-     * @param {String} key
-     * @param {Object} value Value can be string, object, number, boolean
-     */
+  /**
+   * Sets the properties of the object
+   * @param {String} key
+   * @param {Object} value Value can be string, object, number, boolean
+   */
   this.set = function(key, value) {
     var successMsg = "";
     if(key == "parent"){
@@ -105,11 +106,27 @@ moback.objMgr = function (table) {
     return successMsg;
   };
 
-    /**
-     * Returns the value of the property passed to this method
-     * @param {String} key Key used to the parameter of object
-     * @returns {*}
-     */
+  /**
+   * Sets the acl permissions of the object
+   * @param {Object} aclObj Pass an instance of Moback.aclMgr
+   */
+  this.setACL = function(aclObj) {
+    var successMsg = "";
+    if(aclObj){
+      acl = aclObj;
+      successMsg = "ACL for object set";
+    } else {
+      successMsg = "ACL object missing";
+    }
+    return successMsg;
+  };
+
+
+  /**
+   * Returns the value of the property passed to this method
+   * @param {String} key Key used to the parameter of object
+   * @returns {*}
+   */
   this.get = function(key) {
     if(key == "parent"){
       return parent;
@@ -252,6 +269,9 @@ moback.objMgr = function (table) {
           postData[key] = data[key];
         }
       }
+    }
+    if(acl){
+      postData['__acl'] = acl.getACL();
     }
     saveAPI(postData, callback);
   };
