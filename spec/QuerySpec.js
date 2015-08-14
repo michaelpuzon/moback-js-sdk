@@ -10,8 +10,6 @@
 describe("Moback Query Manager", function() {
   var mobackObjects = [];
   var mobackQuery, mobackQuerySecond;
-  var timestamp = new Date().getTime();
-  var objData = {};
   var benedictItems = 0;
   var leads = ['Kevin Spacey', 'Brad Pitt', 'George Clooney', 'Benedict Cumberbatch', 'Johnny Depp'];
   var genre = ['Thriller', 'Horror', 'Comedy', 'Drama','Romance'];
@@ -31,7 +29,7 @@ describe("Moback Query Manager", function() {
   it("should drop the table before object creations", function(done){
     mobackQuery.dropTable(function(data){
       console.log(data);
-      expect(data.hasOwnProperty("success")).toBeFalsy();
+      expect(data.response).toBeTruthy();
       done();
     })
   });
@@ -64,7 +62,7 @@ describe("Moback Query Manager", function() {
         }
         mobackObjects[j].set("Duration", duration);
         mobackObjects[j].set("Lead", leads[Math.floor(Math.random() * leads.length)]);
-        console.log(mobackObjects[j].get("MovieName"));
+        //console.log(mobackObjects[j].get("MovieName"));
         expect(mobackObjects[j].get('Duration')).toEqual(duration);
       }
       done();
@@ -79,9 +77,6 @@ describe("Moback Query Manager", function() {
       for(var k=1;k<=10;k++){
         mobackObjects[k].save(function (data) {
           expect(data.objectId).toBeTruthy();
-          var counter = 1;
-          mobackObjects[counter].set("objectId", data.objectId);
-          counter++;
           done();
         });
       }
@@ -461,6 +456,7 @@ describe("Moback Query Manager", function() {
    */
   it("should set the limit and fetch records the correct number of records", function(done){
       mobackQuerySecond.limit(3);
+      console.log('-----------Fetch Limit');
       mobackQuerySecond.fetch(function(data){
           console.log("Movies with limit set to 3");
           console.log(data);
@@ -511,8 +507,8 @@ describe("Moback Query Manager", function() {
            console.log(data);
            var check = data.length;
            for(var z=0; z < check; z++) {
-               expect(data[z].get("Lead")).toEqual("Benedict Cumberbatch") ||
-               expect(data[z].get("Genre")).toEqual("Thriller");
+             var checkOr = data[z].get("Lead") == 'Benedict Cumberbatch' || data[z].get("Genre") == 'Thriller';
+             expect(checkOr).toEqual(true);
            }
            done();
      })

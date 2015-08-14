@@ -4,8 +4,8 @@
   var moback = {};
   var appKey = '';
   var envKey = '';
-  //var baseUrl = 'http://moback-stage-481937747.us-west-2.elb.amazonaws.com:8080/';
-  var baseUrl = 'https://api.moback.com/';
+  var baseUrl = 'http://moback-stage-481937747.us-west-2.elb.amazonaws.com:8080/';
+  //var baseUrl = 'https://api.moback.com/';
   var sessionToken = null;
 
   moback.initialize = function (newAppKey, newEnvKey) {
@@ -53,6 +53,7 @@
 
 /**
  * Moback User Mgr allows you to create users, have them login later, retrieve user details.
+ * @constructor
  */
 moback.userMgr = function () {
   moback.objMgr.call(this, "__appUsers"); //inherit the moback obj mgr
@@ -275,6 +276,7 @@ moback.userMgr = function () {
  * With that one row of data, you can do set function, for setting a paramter, save to save changes.
  * Object manager also supports parents for one to one pointers, and relations for one to many,
  * and many to many relationships.
+ * @constructor
  * @param {String} table Required parameter to know which table to do operations on.
  * @property id The object id of the object
  * @property createdAt The object's created at date
@@ -567,7 +569,7 @@ moback.objMgr = function (table) {
    * @param {Function} callback
    */
   function saveAPI(postData, callback){
-    console.log(postData);
+    //console.log(postData);
     //console.log(callback);
     var headers = {
       'X-Moback-Environment-Key': envKey,
@@ -827,6 +829,7 @@ moback.GeoPoint.prototype.setGeoPoint = function(lat, lon) {
  * ACL manager allows you to set permissions to a moback object.
  * @param {Object} fileName Filename to be used for the file
  * @param {File} fileData The actual file data
+ * @constructor
  */
 moback.aclMgr = function (existingACL) {
 
@@ -982,6 +985,8 @@ moback.aclMgr = function (existingACL) {
 
 /**
  * Moback Role Mgr allows you to create roles to assign to users for permissions.
+ * @constructor
+ * @param {Sting} roleName Role name to be set for the role.
  */
 moback.roleMgr = function (roleName) {
   moback.objMgr.call(this, "__roleSettings"); //inherit the moback obj mgr
@@ -1024,6 +1029,7 @@ moback.roleMgr = function (roleName) {
  * The Query manager object. This object allows you to run all sorts of queries in a table.
  * Pass table parameter on query object creation to use right away.
  * If table parameter is omitted, please use set table function afterwards.
+ * @constructor
  * @param {String} table Table name to use for all query operations
  */
 moback.queryMgr = function (table) {
@@ -1084,12 +1090,18 @@ moback.queryMgr = function (table) {
     var query = "where=";
     //if filters array is set, build the filters
     if(filters.length > 0){
+      var whereQuery = '';
       if(filters.length == 1){
-        query = query + encodeURIComponent(JSON.stringify(filters[0]));
+        whereQuery = whereQuery + encodeURIComponent(JSON.stringify(filters[0]));
       } else {
         var objQueries = {};
         objQueries["$" + queryMode] = filters;
-        query = query + encodeURIComponent(JSON.stringify(objQueries));
+        whereQuery = whereQuery + encodeURIComponent(JSON.stringify(objQueries));
+      }
+      if(whereQuery != ''){
+        query = query + whereQuery;
+      } else {
+        query = query + encodeURIComponent('{}');
       }
     }
     if(limit){
@@ -1595,6 +1607,7 @@ moback.queryMgr = function (table) {
 /**
  * Notification manager allows you to send notifications to users via the JS sdk.
  * It does not allow to receive notifications, at the moment.
+ * @constructor
  */
 moback.notificationMgr = function(){
 
@@ -1649,6 +1662,7 @@ moback.notificationMgr = function(){
  * File manager allows a file to be saved in the cloud, and be subquently used in moback objects.
  * @param {String} fileName Filename to be used for the file
  * @param {File} fileData The actual file data
+ * @constructor
  */
 moback.fileMgr = function (fileData, fileName) {
   var fileUrl = false;

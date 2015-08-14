@@ -296,7 +296,7 @@ moback.objMgr = function (table) {
    * @param {Function} callback
    */
   function saveAPI(postData, callback){
-    console.log(postData);
+    //console.log(postData);
     //console.log(callback);
     var headers = {
       'X-Moback-Environment-Key': envKey,

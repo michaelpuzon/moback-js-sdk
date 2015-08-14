@@ -63,12 +63,18 @@ moback.queryMgr = function (table) {
     var query = "where=";
     //if filters array is set, build the filters
     if(filters.length > 0){
+      var whereQuery = '';
       if(filters.length == 1){
-        query = query + encodeURIComponent(JSON.stringify(filters[0]));
+        whereQuery = whereQuery + encodeURIComponent(JSON.stringify(filters[0]));
       } else {
         var objQueries = {};
         objQueries["$" + queryMode] = filters;
-        query = query + encodeURIComponent(JSON.stringify(objQueries));
+        whereQuery = whereQuery + encodeURIComponent(JSON.stringify(objQueries));
+      }
+      if(whereQuery != ''){
+        query = query + whereQuery;
+      } else {
+        query = query + encodeURIComponent('{}');
       }
     }
     if(limit){
