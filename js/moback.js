@@ -34,11 +34,17 @@
   };
 
   moback.getSession = function () {
+    var session;
     if(typeof(Storage) !== "undefined") {
-      return localStorage.mobackSession;
+      session = localStorage.mobackSession;
     } else {
       // Sorry! No Web Storage support..
-      return sessionToken;
+      session = sessionToken;
+    }
+    if(session && session != 'undefined'){
+      return session;
+    } else {
+      return false;
     }
   };
 
