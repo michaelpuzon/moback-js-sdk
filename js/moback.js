@@ -1109,6 +1109,8 @@ moback.queryMgr = function (table) {
       } else {
         query = query + encodeURIComponent('{}');
       }
+    } else {
+      query = query + encodeURIComponent('{}');
     }
     if(limit){
       query = query + "&limit=" + limit;
