@@ -1665,6 +1665,31 @@ moback.notificationMgr = function(){
     }, headers, toPost);
   };
 
+  /**
+   * Sends a custom email to a user
+   * @param {object} toPost is an object that looks like the following:
+   {
+      "to":"email@example.com",
+      "templateName":"test",
+      "customProperties":{
+        "key":"value"
+      }
+   }
+
+   * @param {Function} callback
+   */
+  this.sendCustomEmail = function(toPost, callback) {
+
+    var url = baseUrl + "notificationmanager/api/emails/email/custom";
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey
+    };
+    microAjax('POST', url, function (res) {
+      callback(res);
+    }, headers, toPost);
+  };
+
 };
 /**
  * File manager allows a file to be saved in the cloud, and be subquently used in moback objects.
