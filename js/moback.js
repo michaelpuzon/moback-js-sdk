@@ -463,6 +463,16 @@ moback.objMgr = function (table) {
    */
   this.save = function(callback) {
     //prepare object to pass to api call
+    var postData = self.getSaveInfo();
+
+    saveAPI(postData, callback);
+  };
+
+  /**
+   * Return save information, to be used for moback batch processing, and for single object saving
+   */
+  this.getSaveInfo = function() {
+    //prepare object to pass to api call
     var postData = {};
 
     /*relation implementation*/
@@ -525,7 +535,8 @@ moback.objMgr = function (table) {
       }
     }
 
-    /*parent, pointer implementation*/
+    //deprecated code for pointers
+    /*
     if(parent != null){
       if(parent.id){
         postData.parent = {
@@ -541,6 +552,7 @@ moback.objMgr = function (table) {
         return;
       }
     }
+    */
 
     /*for each key, assign it to a value*/
     for(var key in data){
@@ -566,7 +578,7 @@ moback.objMgr = function (table) {
     if(acl){
       postData['__acl'] = acl.getACL();
     }
-    saveAPI(postData, callback);
+    return postData
   };
 
   /**
@@ -1792,6 +1804,85 @@ moback.fileMgr = function (fileData, fileName) {
 
 };
 
+/**
+ * Moback Batch Mgr allows you to execute batch operations on moback objects.
+ * @constructor
+ * @param {String} table Required parameter to know which table to do operations on.
+ */
+moback.batchMgr = function (table) {
+
+  var mobackObjects = [];
+
+  /**
+   * adds a moback obj to batch process array
+   * @param {Object} batchObj moback object with which to do an operation on
+   */
+  this.addJob = function (batchObj) {
+    mobackObjects.push(batchObj);
+  };
+
+  /**
+   * run save/update on batch process array
+   * @param {Function} callback
+   */
+  this.saveUpdateJobs = function (callback) {
+    var url = baseUrl + "objectmgr/api/collections/batch/" + table;
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey
+    };
+
+    var postData = parseMobackSaveObjects();
+
+    microAjax('POST', url, function (res) {
+      //clear batch when done
+      mobackObjects = [];
+      callback(res);
+    }, headers, postData);
+  };
+
+  function parseMobackSaveObjects(){
+    var mobackSaveObjs = [];
+    for (var i = 0; i < mobackObjects.length; i++) {
+      var saveObj = mobackObjects[i].getSaveInfo();
+      mobackSaveObjs.push(saveObj);
+    }
+    return {objects : mobackSaveObjs};
+  }
+
+  /**
+   * run remove object on batch process array
+   * @param {Function} callback
+   */
+  this.deleteJobs = function (callback) {
+    var url = baseUrl + "objectmgr/api/collections/batch/" + table;
+    var headers = {
+      'X-Moback-Environment-Key': envKey,
+      'X-Moback-Application-Key': appKey
+    };
+
+    var postData = parseMobackSaveObjects();
+
+    microAjax('DELETE', url, function (res) {
+      mobackObjects = [];
+      callback(res);
+    }, headers, postData);
+  };
+
+  function parseMobackDeleteObjects(){
+    var mobackDeleteObjs = [];
+    for (var i = 0; i < mobackObjects.length; i++) {
+      //only batch delete objects with moback object ids
+      if(mobackObjects[i].id){
+        mobackDeleteObjs.push(mobackObjects[i].id);
+      }
+    }
+    return {objectIds : mobackSaveObjs};
+  }
+
+
+
+};
 /*
  Copyright (c) 2008 Stefan Lange-Hegermann
 

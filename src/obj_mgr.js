@@ -184,6 +184,16 @@ moback.objMgr = function (table) {
    */
   this.save = function(callback) {
     //prepare object to pass to api call
+    var postData = self.getSaveInfo();
+
+    saveAPI(postData, callback);
+  };
+
+  /**
+   * Return save information, to be used for moback batch processing, and for single object saving
+   */
+  this.getSaveInfo = function() {
+    //prepare object to pass to api call
     var postData = {};
 
     /*relation implementation*/
@@ -246,7 +256,8 @@ moback.objMgr = function (table) {
       }
     }
 
-    /*parent, pointer implementation*/
+    //deprecated code for pointers
+    /*
     if(parent != null){
       if(parent.id){
         postData.parent = {
@@ -262,6 +273,7 @@ moback.objMgr = function (table) {
         return;
       }
     }
+    */
 
     /*for each key, assign it to a value*/
     for(var key in data){
@@ -287,7 +299,7 @@ moback.objMgr = function (table) {
     if(acl){
       postData['__acl'] = acl.getACL();
     }
-    saveAPI(postData, callback);
+    return postData
   };
 
   /**
