@@ -16,6 +16,14 @@ moback.batchMgr = function (table) {
   };
 
   /**
+   * adds an array of moback objs to batch process array
+   * @param {Object} batchObjs moback object with which to do an operation on
+   */
+  this.addJobs = function (batchObjs) {
+    mobackObjects = mobackObjects.concat(batchObjs);
+  };
+
+  /**
    * run save/update on batch process array
    * @param {Function} callback
    */
@@ -49,15 +57,15 @@ moback.batchMgr = function (table) {
    * @param {Function} callback
    */
   this.deleteJobs = function (callback) {
-    var url = baseUrl + "objectmgr/api/collections/batch/" + table;
+    var url = baseUrl + "objectmgr/api/collections/batch/delete/" + table;
     var headers = {
       'X-Moback-Environment-Key': envKey,
       'X-Moback-Application-Key': appKey
     };
 
-    var postData = parseMobackSaveObjects();
+    var postData = parseMobackDeleteObjects();
 
-    microAjax('DELETE', url, function (res) {
+    microAjax('POST', url, function (res) {
       mobackObjects = [];
       callback(res);
     }, headers, postData);
@@ -71,7 +79,7 @@ moback.batchMgr = function (table) {
         mobackDeleteObjs.push(mobackObjects[i].id);
       }
     }
-    return {objectIds : mobackSaveObjs};
+    return {objectIds : mobackDeleteObjs};
   }
 
 

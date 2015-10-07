@@ -46,7 +46,7 @@ describe("Testing Moback Batch Manager", function(){
     /**
      * Test object instantiation of Batch Manager
      */
-    xit("should be able to instantiate moback batch object and add jobs", function() {
+    it("should be able to instantiate moback batch object and add jobs", function() {
       mobackBatch = new Moback.batchMgr("Actor");
       expect(typeof mobackBatch.addJob).toBe("function");
       mobackBatch.addJob(mobackObj1);
@@ -57,7 +57,7 @@ describe("Testing Moback Batch Manager", function(){
     /**
      * To test if the object was successfully saved
      */
-    xit("should be able to batch save" ,function(done){
+    it("should be able to batch save" ,function(done){
       mobackBatch.saveUpdateJobs(function(data){
         console.log(data);
         expect(data.batchResponse).toBeTruthy();
@@ -84,13 +84,11 @@ describe("Testing Moback Batch Manager", function(){
      * To test if the object can be deleted
      */
     it("should batch remove objects", function(done){
-      for (var i = 0; i < mobackObjsFetched.length; i++) {
-        mobackBatch.addJob(mobackObjsFetched[i]);
-      }
+      mobackBatch.addJobs(mobackObjsFetched);
 
       mobackBatch.deleteJobs(function(data){
         console.log(data);
-        expect(data.response).toBeTruthy();
+        expect(data.deletedObjectIds.length).toBeGreaterThan(1);
         done();
       });
     });
