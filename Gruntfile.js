@@ -124,7 +124,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build-dev', ['clean:dev', 'concat']);
 
-  grunt.registerTask('default', ['clean:build', 'concat', 'uglify', 'doxx', 'markdown']);
+  //grunt.registerTask('default', ['clean:build', 'concat', 'uglify', 'doxx', 'markdown']);
+  grunt.registerTask('default', ['clean:build', 'concat', 'uglify', 'markdown']);
 
   grunt.registerTask('serve', ['build-dev', 'connect:server', 'watch:js']);
 };

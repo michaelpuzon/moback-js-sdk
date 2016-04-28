@@ -437,6 +437,14 @@ moback.objMgr = function (table) {
     return (null);
   };
 
+  /**
+   * Returns all properties of the current object
+   * @returns {*}
+   */
+  this.getAll = function() {
+    return data;
+  };
+
     /**
      * Resets the key to null, and deletes the parameter
      * @param {String} key
