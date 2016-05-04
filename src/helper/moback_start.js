@@ -43,7 +43,6 @@
     if(typeof(Storage) !== "undefined" && localStorage.mobackUserInfo) {
       return JSON.parse(localStorage.mobackUserInfo);
     }
-    
     return null;
   };
 

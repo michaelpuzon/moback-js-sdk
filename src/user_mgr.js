@@ -68,7 +68,7 @@ moback.userMgr = function () {
         var user = res.user;
         self.id = user.objectId;
         //self.fetch(callback);
-        moback.saveSession(res.user);
+        moback.saveUser(res.user);
         self.createFromExistingObject(res.user);
         callback(res.user);
       } else {
