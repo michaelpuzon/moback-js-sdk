@@ -33,6 +33,21 @@
     }
   };
 
+  moback.saveUser = function (userData) {
+    if(typeof(Storage) !== "undefined") {
+      var userInfo = JSON.stringify(userData);
+      localStorage.setItem("mobackUserInfo", userInfo);
+    }
+  };
+
+  moback.getUser = function () {
+    if(typeof(Storage) !== "undefined" && localStorage.mobackUserInfo) {
+      return JSON.parse(localStorage.mobackUserInfo);
+    }
+    
+    return null;
+  };
+
   moback.getSession = function () {
     var session;
     if(typeof(Storage) !== "undefined") {
@@ -51,6 +66,7 @@
   moback.clearSession = function () {
     if(typeof(Storage) !== "undefined") {
       localStorage.removeItem("mobackSession");
+      localStorage.removeItem("mobackUserInfo");
     }
     sessionToken = null;
   };
@@ -127,6 +143,7 @@ moback.userMgr = function () {
         var user = res.user;
         self.id = user.objectId;
         //self.fetch(callback);
+        moback.saveSession(res.user);
         self.createFromExistingObject(res.user);
         callback(res.user);
       } else {
@@ -142,6 +159,16 @@ moback.userMgr = function () {
    */
   this.getSessionToken = function(){
     return moback.getSession();
+  };
+
+  /**
+   * Returns the session token if the user is logged in else returns null
+   * @returns {String} sessionToken or false
+   */
+  this.autoLogin = function(){
+    var user = moback.getUser();
+    self.createFromExistingObject(user);
+    return user;
   };
 
   /**

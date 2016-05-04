@@ -68,6 +68,7 @@ moback.userMgr = function () {
         var user = res.user;
         self.id = user.objectId;
         //self.fetch(callback);
+        moback.saveSession(res.user);
         self.createFromExistingObject(res.user);
         callback(res.user);
       } else {
@@ -83,6 +84,16 @@ moback.userMgr = function () {
    */
   this.getSessionToken = function(){
     return moback.getSession();
+  };
+
+  /**
+   * Returns the session token if the user is logged in else returns null
+   * @returns {String} sessionToken or false
+   */
+  this.autoLogin = function(){
+    var user = moback.getUser();
+    self.createFromExistingObject(user);
+    return user;
   };
 
   /**

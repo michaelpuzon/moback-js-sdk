@@ -32,6 +32,21 @@
     }
   };
 
+  moback.saveUser = function (userData) {
+    if(typeof(Storage) !== "undefined") {
+      var userInfo = JSON.stringify(userData);
+      localStorage.setItem("mobackUserInfo", userInfo);
+    }
+  };
+
+  moback.getUser = function () {
+    if(typeof(Storage) !== "undefined" && localStorage.mobackUserInfo) {
+      return JSON.parse(localStorage.mobackUserInfo);
+    }
+    
+    return null;
+  };
+
   moback.getSession = function () {
     var session;
     if(typeof(Storage) !== "undefined") {
@@ -50,6 +65,7 @@
   moback.clearSession = function () {
     if(typeof(Storage) !== "undefined") {
       localStorage.removeItem("mobackSession");
+      localStorage.removeItem("mobackUserInfo");
     }
     sessionToken = null;
   };
