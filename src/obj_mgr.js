@@ -285,7 +285,7 @@ moback.objMgr = function (table) {
 
     /*for each key, assign it to a value*/
     for(var key in data){
-      if(data[key] && data[key] !== null){
+      if(data[key] != null){
         //this is a pointer to another table, save it like below
         if(data[key].id){
           postData[key] = {
