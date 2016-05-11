@@ -471,10 +471,28 @@ moback.objMgr = function (table) {
     return data;
   };
 
-    /**
-     * Resets the key to null, and deletes the parameter
-     * @param {String} key
-     */
+  /**
+   * Removes the file column from the object
+   * @param {String} key Key column of the table
+   * @param {Function} callback
+   * @returns {string} output message
+   */
+  this.removeFile = function(key, callback) {
+    //get the file object
+    var deleteFile = data[key];
+    var newFileObject = new moback.fileMgr(deleteFile.url, deleteFile.name);
+    var session = moback.getSession();
+    newFileObject.removeFile(session, function(res){
+      data[key].name = "";
+      data[key].url = "";
+      callback(res);
+    });
+  };
+
+  /**
+   * Resets the key to null, and deletes the parameter
+   * @param {String} key
+   */
   this.unset = function(key) {
     if(key == "parent"){
       parent = null;
