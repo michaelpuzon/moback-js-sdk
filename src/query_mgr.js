@@ -279,7 +279,7 @@ moback.queryMgr = function (table) {
   this.applyRegex = function (key, value){
     if (key && value){
       var newFilter = {};
-      newFilter[key] = {'$regex' : value};
+      newFilter[key] = {'$regex' : value, '$options':'i'};
       filters.push(newFilter);
       return ("Added filter: regex " + key + " : " + value);
     } else {
