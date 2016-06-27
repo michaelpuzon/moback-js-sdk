@@ -210,15 +210,17 @@ moback.objMgr = function (table) {
    */
   this.save = function(callback) {
     //prepare object to pass to api call
-    var postData = self.getSaveInfo();
+    var postData = self.getSaveInfo(callback);
 
-    saveAPI(postData, callback);
+    if(postData){
+      saveAPI(postData, callback);
+    }
   };
 
   /**
    * Return save information, to be used for moback batch processing, and for single object saving
    */
-  this.getSaveInfo = function() {
+  this.getSaveInfo = function(callback) {
     //prepare object to pass to api call
     var postData = {};
 
@@ -262,9 +264,8 @@ moback.objMgr = function (table) {
         }
       }
       if(removeRelationArray.length > 0){
-        var callback = function(){};
         removePointers(removeRelationArray, callback);
-        return;
+        return false;
       }
       if(addRelationArray.length > 0){
         //form objects for api call
