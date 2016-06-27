@@ -567,6 +567,7 @@ moback.objMgr = function (table) {
         }
       }
       if(removeRelationArray.length > 0){
+        var callback = function(){};
         removePointers(removeRelationArray, callback);
         return;
       }
