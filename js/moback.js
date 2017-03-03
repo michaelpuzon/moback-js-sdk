@@ -1979,8 +1979,13 @@ function microAjax(method, url, callbackFunction, headers, postData, fileMode) {
 
   function processRequest(){
     if (httpRequest.readyState === 4) {
-      var result = JSON.parse(httpRequest.responseText);
-      callbackFunction(result);
+      try {
+        var result = JSON.parse(httpRequest.responseText);
+        callbackFunction(result);
+      }
+      catch (e) {
+        callbackFunction(e);
+      }
     }
   }
 
